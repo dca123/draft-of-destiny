@@ -8,8 +8,8 @@
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "target": "ES2022",
-    "lib": ["ESNext"],
     "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ES2024"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
