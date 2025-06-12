@@ -1,14 +1,18 @@
 import { drizzle } from "drizzle-orm/libsql";
-import path from "path";
 
-import { readdir } from "fs/promises";
+const fs = require("fs");
+const path = require("path");
 
 const folderPath = process.cwd();
-const files = await readdir(folderPath);
 
-for (const file of files) {
-  console.log(file);
-}
+fs.readdir(folderPath, (err: unknown, files: Array<unknown>) => {
+  if (err) {
+    return console.error("Unable to scan directory:", err);
+  }
+  files.forEach((file) => {
+    console.log(file);
+  });
+});
 
 const dbLocation = path.join(process.cwd(), "dota.db");
 export const dotaDb = drizzle({
