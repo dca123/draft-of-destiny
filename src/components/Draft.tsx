@@ -4,18 +4,49 @@ import { machine } from "@/lib/state-machine";
 import { useActor } from "@xstate/react";
 import { useAtomValue } from "jotai";
 import { selectedHeroAtom } from "./hero-selection-state";
+import usePartySocket from "partysocket/react";
+import { useState } from "react";
 
 export function Draft() {
-  const [state, send] = useActor(machine);
+  const [state, setState] = useState({
+    context: {
+      side: "team_1",
+      team_1_heroes: [] as string[],
+      team_1_bans: [] as string[],
+      team_2_heroes: [] as string[],
+      team_2_bans: [] as string[],
+    },
+  });
+  const ws = usePartySocket({
+    // usePartySocket takes the same arguments as PartySocket.
+    host:
+      process.env.ENV === "production"
+        ? process.env.PARTYKIT_URL
+        : "localhost:1999", // or localhost:1999 in dev
+    room: "my-room",
+
+    // in addition, you can provide socket lifecycle event handlers
+    // (equivalent to using ws.addEventListener in an effect hook)
+    onOpen() {
+      console.log("connected");
+    },
+    onMessage(e) {
+      console.log("message", e.data);
+      const s = JSON.parse(e.data);
+      setState({ context: s });
+    },
+    onClose() {
+      console.log("closed");
+    },
+    onError(e) {
+      console.log("error");
+    },
+  });
   const selectedHero = useAtomValue(selectedHeroAtom);
-  console.log(state);
 
   function handleClick() {
     if (selectedHero === "") return;
-    send({
-      type: "NEXT",
-      hero: selectedHero,
-    });
+    ws.send(selectedHero);
   }
   return (
     <div className="flex flex-col gap-3">
