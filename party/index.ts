@@ -23,7 +23,6 @@ export default class Server implements Party.Server {
   room: ${this.room.id}
   url: ${new URL(ctx.request.url).pathname}`,
     );
-    console.log(this.room.parties);
 
     // let's send a message to the connection
     const snapshot = this.draftActor.getSnapshot();

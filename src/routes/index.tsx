@@ -5,6 +5,8 @@ import { dotaDb } from "@/db";
 import { heroes } from "@/db/schema/heroesItems";
 import { asc } from "drizzle-orm";
 import { Draft } from "@/components/Draft";
+import { TeamSelect } from "@/components/TeamSelect";
+import { useLobbyStore } from "@/components/lobby-state";
 
 type Heroes = typeof heroes.$inferSelect;
 const getHeroes = createServerFn().handler(async () => {
@@ -25,14 +27,28 @@ function Home() {
   const state = Route.useLoaderData();
 
   return (
-    <div className="flex flex-row justify-between">
-      <div className="max-w-lg gap-1 flex flex-col">
-        <HeroGrid heroes={state.STR} />
-        <HeroGrid heroes={state.AGI} />
-        <HeroGrid heroes={state.INT} />
-        <HeroGrid heroes={state.ALL} />
+    <div>
+      <TeamSelect />
+      <div className="flex flex-row justify-between">
+        <div className="max-w-lg gap-1 flex flex-col">
+          <HeroGrid heroes={state.STR} />
+          <HeroGrid heroes={state.AGI} />
+          <HeroGrid heroes={state.INT} />
+          <HeroGrid heroes={state.ALL} />
+        </div>
+        <CurrentSide />
+        <Draft />
       </div>
-      <Draft />
+    </div>
+  );
+}
+
+function CurrentSide() {
+  const side = useLobbyStore((s) => s.side);
+  const displayText = side === "team_1" ? "Team 1" : "Team 2";
+  return (
+    <div>
+      <h1>{displayText}'s turn</h1>
     </div>
   );
 }
