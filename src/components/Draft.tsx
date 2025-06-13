@@ -19,7 +19,7 @@ export function Draft() {
   });
   const ws = usePartySocket({
     // usePartySocket takes the same arguments as PartySocket.
-    host: process.env.PARTYKIT_URL,
+    host: process.env.VITE_PARTYKIT_URL,
     room: "my-room",
 
     // in addition, you can provide socket lifecycle event handlers
