@@ -19,10 +19,7 @@ export function Draft() {
   });
   const ws = usePartySocket({
     // usePartySocket takes the same arguments as PartySocket.
-    host:
-      process.env.ENV === "production"
-        ? process.env.PARTYKIT_URL
-        : "localhost:1999", // or localhost:1999 in dev
+    host: process.env.PARTYKIT_URL,
     room: "my-room",
 
     // in addition, you can provide socket lifecycle event handlers
