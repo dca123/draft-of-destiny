@@ -181,7 +181,10 @@ export function Draft() {
         />
       </div>
       <Button onClick={handleClick} disabled={selectedHero === ""}>
+        {/* 
         {state.status === "active" ? "Select Hero" : "Complete Draft"}
+	*/}
+        Select Hero
       </Button>
     </div>
   );
