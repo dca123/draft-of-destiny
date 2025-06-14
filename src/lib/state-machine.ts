@@ -1,13 +1,27 @@
 import { assign, setup } from "xstate";
 
+type NumsGenerator<
+  T extends Number,
+  R extends Array<unknown> = [unknown],
+  Re = never,
+> = T extends R["length"]
+  ? Re | R["length"]
+  : NumsGenerator<T, [...R, unknown], Re | R["length"]>;
+type Bans = `BAN_${NumsGenerator<14>}`;
+type Picks = `PICK_${NumsGenerator<10>}`;
+
+export type Selections = Bans | Picks;
+export type Draft = Record<Selections, string>;
+export type ExportedMachineState = {
+  side: "team_1" | "team_2";
+  draft: Draft;
+};
+
 export const machine = setup({
   types: {
-    context: {} as {
-      side: "team_1" | "team_2";
-      team_1_heroes: Array<string>;
-      team_2_heroes: Array<string>;
-      team_1_bans: Array<string>;
-      team_2_bans: Array<string>;
+    context: {} as ExportedMachineState & {
+      banIdx: number;
+      pickIdx: number;
     },
     events: {} as {
       type: "NEXT";
@@ -21,43 +35,33 @@ export const machine = setup({
     setSideTeam2: assign({
       side: "team_2",
     }),
-    addToPicks: assign({
-      team_1_heroes: ({ context, event }) => {
-        if (context.side === "team_1") {
-          return context.team_1_heroes.concat(event.hero);
-        }
-        return context.team_1_heroes;
-      },
-      team_2_heroes: ({ context, event }) => {
-        if (context.side === "team_2") {
-          return context.team_2_heroes.concat(event.hero);
-        }
-        return context.team_2_heroes;
+    addToDraft: assign({
+      draft: ({ context, event }) => {
+        return context.draft;
       },
     }),
+    addToPicks: assign({
+      pickIdx: ({ context }) => context.pickIdx + 1,
+      draft: ({ context, event }) => ({
+        ...context.draft,
+        [`PICK_${context.pickIdx}`]: event.hero,
+      }),
+    }),
     addToBans: assign({
-      team_1_bans: ({ context, event }) => {
-        if (context.side === "team_1") {
-          return context.team_1_bans.concat(event.hero);
-        }
-        return context.team_1_bans;
-      },
-      team_2_bans: ({ context, event }) => {
-        if (context.side === "team_2") {
-          return context.team_2_bans.concat(event.hero);
-        }
-        return context.team_2_bans;
-      },
+      banIdx: ({ context }) => context.banIdx + 1,
+      draft: ({ context, event }) => ({
+        ...context.draft,
+        [`BAN_${context.banIdx}`]: event.hero,
+      }),
     }),
   },
 }).createMachine({
   initial: "BAN_1",
   context: {
     side: "team_1",
-    team_1_heroes: [] as string[],
-    team_1_bans: [] as string[],
-    team_2_heroes: [] as string[],
-    team_2_bans: [] as string[],
+    banIdx: 1,
+    pickIdx: 1,
+    draft: {} as Record<Picks | Bans, string>,
   },
   states: {
     BAN_1: {

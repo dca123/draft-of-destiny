@@ -4,27 +4,27 @@ import { useAtomValue } from "jotai";
 import { selectedHeroAtom } from "./hero-selection-state";
 import usePartySocket from "partysocket/react";
 import { useLobbyStore } from "./lobby-state";
+import { env } from "@/env/client";
+import type { SelectHeroMessage } from "party";
 
 export function Draft() {
-  const {
-    side,
-    playerSide,
-    team_1_bans,
-    team_1_heroes,
-    team_2_bans,
-    team_2_heroes,
-    updateDraftState,
-  } = useLobbyStore((state) => state);
+  const side = useLobbyStore((state) => state.side);
+  const playerSide = useLobbyStore((state) => state.playerSide);
+  const draft = useLobbyStore((state) => state.draft);
+  const updateDraftState = useLobbyStore((state) => state.updateDraftState);
+  const optimisticDraftUpdate = useLobbyStore(
+    (state) => state.optimisticDraftUpdate,
+  );
+  const draftState = useLobbyStore((state) => state.state); // renamed to avoid shadowing 'state'
 
   const ws = usePartySocket({
-    // usePartySocket takes the same arguments as PartySocket.
-    host: import.meta.env.DEV
-      ? "localhost:1999"
-      : import.meta.env.VITE_PARTYKIT_URL!,
+    host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
     room: "my-room",
+    // startClosed: true,
+    query: () => ({
+      draftName: "hellowWorld",
+    }),
 
-    // in addition, you can provide socket lifecycle event handlers
-    // (equivalent to using ws.addEventListener in an effect hook)
     onOpen() {
       console.log("connected");
     },
@@ -40,151 +40,88 @@ export function Draft() {
       console.log("error");
     },
   });
+
   const selectedHero = useAtomValue(selectedHeroAtom);
 
   function handleClick() {
     if (selectedHero === "") return;
-    ws.send(selectedHero);
+    optimisticDraftUpdate(draftState, selectedHero);
+    const message = {
+      type: "select_hero",
+      payload: {
+        hero: selectedHero,
+      },
+    } satisfies SelectHeroMessage;
+    ws.send(JSON.stringify(message));
   }
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 grid-rows-4 gap-3 justify-end">
+        <HeroSlot isPick={false} selectionId="BAN_1" shortName={draft.BAN_1} />
+        <HeroSlot isPick={false} selectionId="BAN_2" shortName={draft.BAN_2} />
+        <HeroSlot isPick={false} selectionId="BAN_4" shortName={draft.BAN_4} />
+        <HeroSlot isPick={false} selectionId="BAN_3" shortName={draft.BAN_3} />
+        <HeroSlot isPick={false} selectionId="BAN_7" shortName={draft.BAN_7} />
+        <HeroSlot isPick={false} selectionId="BAN_5" shortName={draft.BAN_5} />
         <HeroSlot
-          isPick={false}
-          selectionId="BAN_1"
-          shortName={team_1_bans[0]}
-        />
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_2"
-          shortName={team_2_bans[0]}
-        />
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_3"
-          shortName={team_1_bans[1]}
-        />
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_4"
-          shortName={team_2_bans[1]}
-        />
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_5"
-          shortName={team_1_bans[2]}
-        />
-        <HeroSlot
+          className="col-start-2"
           isPick={false}
           selectionId="BAN_6"
-          shortName={team_2_bans[2]}
-        />
-        <HeroSlot
-          isPick={false}
-          className="col-start-2"
-          selectionId="BAN_7"
-          shortName={team_2_bans[3]}
+          shortName={draft.BAN_6}
         />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-3 justify-end">
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_1"
-          shortName={team_1_heroes[0]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_2"
-          shortName={team_2_heroes[0]}
-        />
+        <HeroSlot isPick={true} selectionId="PICK_1" shortName={draft.PICK_1} />
+        <HeroSlot isPick={true} selectionId="PICK_2" shortName={draft.PICK_2} />
 
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_8"
-          shortName={team_1_bans[3]}
-        />
-        <HeroSlot
-          isPick={false}
-          selectionId="BAN_9"
-          shortName={team_2_bans[4]}
-        />
+        <HeroSlot isPick={false} selectionId="BAN_8" shortName={draft.BAN_8} />
         <HeroSlot
           isPick={false}
           selectionId="BAN_10"
-          shortName={team_1_bans[4]}
+          shortName={draft.BAN_10}
         />
+        <HeroSlot isPick={false} selectionId="BAN_9" shortName={draft.BAN_9} />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-3 justify-end">
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_4"
-          shortName={team_1_heroes[1]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_3"
-          shortName={team_2_heroes[1]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_5"
-          shortName={team_1_heroes[2]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_6"
-          shortName={team_2_heroes[2]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_8"
-          shortName={team_1_heroes[3]}
-        />
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_7"
-          shortName={team_2_heroes[3]}
-        />
+        <HeroSlot isPick={true} selectionId="PICK_4" shortName={draft.PICK_4} />
+        <HeroSlot isPick={true} selectionId="PICK_3" shortName={draft.PICK_3} />
+        <HeroSlot isPick={true} selectionId="PICK_5" shortName={draft.PICK_5} />
+        <HeroSlot isPick={true} selectionId="PICK_6" shortName={draft.PICK_6} />
+        <HeroSlot isPick={true} selectionId="PICK_8" shortName={draft.PICK_8} />
+        <HeroSlot isPick={true} selectionId="PICK_7" shortName={draft.PICK_7} />
 
         <HeroSlot
           isPick={false}
           selectionId="BAN_11"
-          shortName={team_1_bans[5]}
+          shortName={draft.BAN_11}
         />
         <HeroSlot
           isPick={false}
           selectionId="BAN_12"
-          shortName={team_2_bans[5]}
+          shortName={draft.BAN_12}
         />
         <HeroSlot
           isPick={false}
           selectionId="BAN_14"
-          shortName={team_1_bans[6]}
+          shortName={draft.BAN_14}
         />
         <HeroSlot
           isPick={false}
           selectionId="BAN_13"
-          shortName={team_2_bans[6]}
+          shortName={draft.BAN_13}
         />
 
-        <HeroSlot
-          isPick={true}
-          selectionId="PICK_9"
-          shortName={team_1_heroes[4]}
-        />
+        <HeroSlot isPick={true} selectionId="PICK_9" shortName={draft.PICK_9} />
         <HeroSlot
           isPick={true}
           selectionId="PICK_10"
-          shortName={team_2_heroes[4]}
+          shortName={draft.PICK_10}
         />
       </div>
       <Button
         onClick={handleClick}
         disabled={selectedHero === "" || side !== playerSide}
       >
-        {/* 
-        {state.status === "active" ? "Select Hero" : "Complete Draft"}
-	*/}
         Select Hero
       </Button>
     </div>

@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { HeroGrid } from "@/components/HeroGrid";
 import { dotaDb } from "@/db";
-import { heroes } from "@/db/schema/heroesItems";
+import { heroes } from "@/db/dota-db-schema/heroesItems";
 import { asc } from "drizzle-orm";
 import { Draft } from "@/components/Draft";
 import { TeamSelect } from "@/components/TeamSelect";
 import { useLobbyStore } from "@/components/lobby-state";
+import { SaveDraft } from "@/components/SaveDraft";
 
 type Heroes = typeof heroes.$inferSelect;
 const getHeroes = createServerFn().handler(async () => {
@@ -37,6 +38,7 @@ function Home() {
           <HeroGrid heroes={state.ALL} />
         </div>
         <CurrentSide />
+        <SaveDraft />
         <Draft />
       </div>
     </div>

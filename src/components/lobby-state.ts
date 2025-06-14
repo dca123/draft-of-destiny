@@ -1,3 +1,5 @@
+import type { Draft, ExportedMachineState } from "@/lib/state-machine";
+import type { LobbyUpdate } from "party";
 import { create } from "zustand";
 
 type LobbyState = {
@@ -5,15 +7,10 @@ type LobbyState = {
   playerSide: "team_1" | "team_2";
 } & DraftState;
 
-type DraftState = {
-  side: "team_1" | "team_2";
-  team_1_heroes: Array<string>;
-  team_2_heroes: Array<string>;
-  team_1_bans: Array<string>;
-  team_2_bans: Array<string>;
-};
+type DraftState = LobbyUpdate;
 
 type Actions = {
+  optimisticDraftUpdate: (selection: DraftState["state"], hero: string) => void;
   updateDraftState: (state: DraftState) => void;
   setTeam: (team: "team_1" | "team_2") => void;
   resetLobby: (lobbyName: string) => void;
@@ -21,10 +18,33 @@ type Actions = {
 
 const initialDraft: DraftState = {
   side: "team_1",
-  team_1_heroes: [],
-  team_2_heroes: [],
-  team_1_bans: [],
-  team_2_bans: [],
+  state: "BAN_1",
+  draft: {
+    BAN_1: "",
+    BAN_2: "",
+    BAN_3: "",
+    BAN_4: "",
+    BAN_5: "",
+    BAN_6: "",
+    BAN_7: "",
+    BAN_8: "",
+    BAN_9: "",
+    BAN_10: "",
+    BAN_11: "",
+    BAN_12: "",
+    BAN_13: "",
+    BAN_14: "",
+    PICK_1: "",
+    PICK_2: "",
+    PICK_3: "",
+    PICK_4: "",
+    PICK_5: "",
+    PICK_6: "",
+    PICK_7: "",
+    PICK_8: "",
+    PICK_9: "",
+    PICK_10: "",
+  } satisfies Draft,
 };
 const initialState: LobbyState = {
   lobbyName: generatePartyName(),
@@ -34,6 +54,13 @@ const initialState: LobbyState = {
 
 export const useLobbyStore = create<LobbyState & Actions>((set) => ({
   ...initialState,
+  optimisticDraftUpdate: (selection, hero) =>
+    set((state) => ({
+      draft: {
+        ...state.draft,
+        [selection]: hero,
+      },
+    })),
   updateDraftState: (draft) => set(draft),
   setTeam: (team) => set({ playerSide: team }),
   resetLobby: (lobbyName) =>
