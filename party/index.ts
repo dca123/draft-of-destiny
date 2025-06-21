@@ -1,5 +1,5 @@
 import { appDb } from "@/db";
-import { drafts, generateDraftId } from "@/db/schema/drafts";
+import { drafts, type CustomSnapshot } from "@/db/schema/drafts";
 import { generatePartyName } from "@/lib/random";
 import {
   machine,
@@ -55,7 +55,7 @@ export default class Server implements Party.Server {
     const snapshot = await loadPersistedState({ id: this.room.id });
     if (snapshot !== undefined) {
       this.draftActor = new Actor(machine, {
-        snapshot,
+        snapshot: snapshot,
       });
     }
     this.draftActor.subscribe((snapshot) => {
@@ -97,17 +97,20 @@ export default class Server implements Party.Server {
       await upsertDraft({
         id: this.room.id,
         name: this.draftName ?? "",
-        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
     } else if (parsedMessage.type === "branch_draft") {
       await upsertDraft({
         id: this.room.id,
         name: this.draftName ?? "",
-        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
       await branchDraft({
         id: this.room.id,
-        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
     }
     console.log(`connection ${sender.id} sent message: ${message}`);
@@ -120,7 +123,8 @@ export default class Server implements Party.Server {
       const result = await upsertDraft({
         id: this.room.id,
         name: paylaod.name,
-        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
       return new Response(JSON.stringify({ id: result.id }), {
         status: 200,
@@ -138,7 +142,7 @@ export default class Server implements Party.Server {
 
 async function branchDraft(opts: {
   id: string;
-  persistedMachineSnapshot: Snapshot<unknown>;
+  persistedMachineSnapshot: CustomSnapshot;
 }) {
   const name = `${opts.id}.${generatePartyName()}`;
   const branchedDraft = await appDb
@@ -171,7 +175,7 @@ async function loadPersistedState(opts: { id: string }) {
 async function upsertDraft(opts: {
   id: string;
   name: string;
-  persistedMachineSnapshot: Snapshot<unknown>;
+  persistedMachineSnapshot: CustomSnapshot;
 }) {
   const result = await appDb
     .insert(drafts)

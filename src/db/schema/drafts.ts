@@ -7,8 +7,10 @@ import {
 } from "drizzle-orm/sqlite-core";
 import type { Snapshot } from "xstate";
 
-type CustomSnapshot = {
+export type CustomSnapshot = {
   status: Snapshot<unknown>["status"];
+  output: undefined;
+  error: undefined;
   value: Selections | "DRAFT_END";
   context: {
     draft: Draft;
