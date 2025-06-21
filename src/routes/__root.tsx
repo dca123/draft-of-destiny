@@ -6,6 +6,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import appCss from "@/styles/app.css?url";
+import { getTheme } from "@/lib/theme";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -18,7 +19,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Draft of Destiny",
+        title: "Drafts of Destiny",
       },
     ],
     links: [
@@ -29,6 +30,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
+  loader: () => getTheme(),
 });
 
 function RootComponent() {
@@ -40,13 +42,14 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const theme = Route.useLoaderData();
   return (
-    <html>
+    <html className={theme}>
       <head>
         <HeadContent />
       </head>
       <body className="flex flex-col min-h-screen">
-        <main className="flex-grow p-4">{children}</main>
+        <main className="flex-grow p-8">{children}</main>
         <Scripts />
       </body>
     </html>

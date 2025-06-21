@@ -17,6 +17,45 @@ export type ExportedMachineState = {
   draft: Draft;
 };
 
+export type TeamSelections = ReturnType<typeof draftToTeamSelections>;
+export function draftToTeamSelections(opts: { draft: Draft }) {
+  const selections = {
+    team_1_picks: [
+      opts.draft.PICK_1,
+      opts.draft.PICK_4,
+      opts.draft.PICK_5,
+      opts.draft.PICK_8,
+      opts.draft.PICK_9,
+    ],
+    team_2_picks: [
+      opts.draft.PICK_2,
+      opts.draft.PICK_3,
+      opts.draft.PICK_6,
+      opts.draft.PICK_7,
+      opts.draft.PICK_10,
+    ],
+    team_1_bans: [
+      opts.draft.BAN_1,
+      opts.draft.BAN_4,
+      opts.draft.BAN_7,
+      opts.draft.BAN_8,
+      opts.draft.BAN_9,
+      opts.draft.BAN_11,
+      opts.draft.BAN_14,
+    ],
+    team_2_bans: [
+      opts.draft.BAN_2,
+      opts.draft.BAN_3,
+      opts.draft.BAN_5,
+      opts.draft.BAN_6,
+      opts.draft.BAN_10,
+      opts.draft.BAN_12,
+      opts.draft.BAN_13,
+    ],
+  };
+  return selections;
+}
+
 export const machine = setup({
   types: {
     context: {} as ExportedMachineState & {

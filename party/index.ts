@@ -1,5 +1,6 @@
 import { appDb } from "@/db";
-import { drafts } from "@/db/schema/drafts";
+import { drafts, generateDraftId } from "@/db/schema/drafts";
+import { generatePartyName } from "@/lib/random";
 import {
   machine,
   type ExportedMachineState,
@@ -23,7 +24,18 @@ export type SelectHeroMessage = {
   };
 };
 
-type Message = SaveMessage | SelectHeroMessage;
+export type BranchDraftMessage = {
+  type: "branch_draft";
+};
+
+type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage;
+
+export type CreateDraftMessage = {
+  type: "create_draft";
+  paylaod: {
+    name: string;
+  };
+};
 
 export default class Server implements Party.Server {
   draftActor: Actor<typeof machine>;
@@ -87,9 +99,59 @@ export default class Server implements Party.Server {
         name: this.draftName ?? "",
         persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
       });
+    } else if (parsedMessage.type === "branch_draft") {
+      await upsertDraft({
+        id: this.room.id,
+        name: this.draftName ?? "",
+        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+      });
+      await branchDraft({
+        id: this.room.id,
+        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+      });
     }
     console.log(`connection ${sender.id} sent message: ${message}`);
   }
+
+  async onRequest(req: Party.Request) {
+    await this.setup();
+    if (req.method === "POST") {
+      const { paylaod } = (await req.json()) as CreateDraftMessage;
+      const result = await upsertDraft({
+        id: this.room.id,
+        name: paylaod.name,
+        persistedMachineSnapshot: this.draftActor.getPersistedSnapshot(),
+      });
+      return new Response(JSON.stringify({ id: result.id }), {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
+    }
+
+    return new Response("Invalid method", { status: 405 });
+  }
+}
+
+async function branchDraft(opts: {
+  id: string;
+  persistedMachineSnapshot: Snapshot<unknown>;
+}) {
+  const name = `${opts.id}.${generatePartyName()}`;
+  const branchedDraft = await appDb
+    .insert(drafts)
+    .values({
+      persistedMachineSnapshot: opts.persistedMachineSnapshot,
+      name,
+      parentDraft: opts.id,
+    })
+    .returning({
+      id: drafts.id,
+    });
+  return branchedDraft;
 }
 
 async function loadPersistedState(opts: { id: string }) {
@@ -117,7 +179,14 @@ async function upsertDraft(opts: {
     .onConflictDoUpdate({
       target: drafts.id,
       set: { persistedMachineSnapshot: opts.persistedMachineSnapshot },
+    })
+    .returning({
+      id: drafts.id,
     });
+  if (!result[0]) {
+    throw new Error("No result was returned after upsert");
+  }
+  return result[0];
 }
 
 Server satisfies Party.Worker;

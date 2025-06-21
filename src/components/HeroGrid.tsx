@@ -21,8 +21,8 @@ export function HeroGrid(props: {
             )}
           />
           <img
-            src={`https://courier.spectral.gg/images/dota/portraits_vert/${hero.shortName}`}
-            className="rounded"
+            src={`https://courier.spectral.gg/images/dota/portraits_vert/${hero.shortName}?size=smaller`}
+            className="rounded object-cover"
           />
         </div>
       ))}

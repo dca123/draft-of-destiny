@@ -6,8 +6,13 @@ import usePartySocket from "partysocket/react";
 import { useLobbyStore } from "./lobby-state";
 import { env } from "@/env/client";
 import type { SelectHeroMessage } from "party";
+import { useLoaderData } from "@tanstack/react-router";
 
 export function Draft() {
+  const draftId = useLoaderData({
+    from: "/drafts/$draftId",
+    select: (data) => data.draft.id,
+  });
   const side = useLobbyStore((state) => state.side);
   const playerSide = useLobbyStore((state) => state.playerSide);
   const draft = useLobbyStore((state) => state.draft);
@@ -19,7 +24,7 @@ export function Draft() {
 
   const ws = usePartySocket({
     host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
-    room: "my-room",
+    room: draftId,
     // startClosed: true,
     query: () => ({
       draftName: "hellowWorld",

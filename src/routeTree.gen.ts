@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DraftsNewRouteImport } from './routes/drafts.new'
+import { Route as DraftsDraftIdRouteImport } from './routes/drafts.$draftId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DraftsNewRoute = DraftsNewRouteImport.update({
+  id: '/drafts/new',
+  path: '/drafts/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DraftsDraftIdRoute = DraftsDraftIdRouteImport.update({
+  id: '/drafts/$draftId',
+  path: '/drafts/$draftId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/drafts/$draftId': typeof DraftsDraftIdRoute
+  '/drafts/new': typeof DraftsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/drafts/$draftId': typeof DraftsDraftIdRoute
+  '/drafts/new': typeof DraftsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/drafts/$draftId': typeof DraftsDraftIdRoute
+  '/drafts/new': typeof DraftsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/drafts/$draftId' | '/drafts/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/drafts/$draftId' | '/drafts/new'
+  id: '__root__' | '/' | '/drafts/$draftId' | '/drafts/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DraftsDraftIdRoute: typeof DraftsDraftIdRoute
+  DraftsNewRoute: typeof DraftsNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/drafts/new': {
+      id: '/drafts/new'
+      path: '/drafts/new'
+      fullPath: '/drafts/new'
+      preLoaderRoute: typeof DraftsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/drafts/$draftId': {
+      id: '/drafts/$draftId'
+      path: '/drafts/$draftId'
+      fullPath: '/drafts/$draftId'
+      preLoaderRoute: typeof DraftsDraftIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DraftsDraftIdRoute: DraftsDraftIdRoute,
+  DraftsNewRoute: DraftsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

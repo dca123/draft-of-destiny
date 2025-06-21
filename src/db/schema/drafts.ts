@@ -1,11 +1,27 @@
-import { type Draft, type ExportedMachineState } from "@/lib/state-machine";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { randomIdGenerator } from "@/lib/random";
+import type { Draft, Selections } from "@/lib/state-machine";
+import {
+  sqliteTable,
+  text,
+  type AnySQLiteColumn,
+} from "drizzle-orm/sqlite-core";
 import type { Snapshot } from "xstate";
 
+type CustomSnapshot = {
+  status: Snapshot<unknown>["status"];
+  value: Selections | "DRAFT_END";
+  context: {
+    draft: Draft;
+  };
+};
+export const generateDraftId = randomIdGenerator(10);
 export const drafts = sqliteTable("drafts", {
-  id: text().primaryKey(),
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => generateDraftId()),
   name: text().notNull().default(""),
   persistedMachineSnapshot: text({ mode: "json" })
-    .$type<Snapshot<unknown>>()
-    .notNull(),
+    .notNull()
+    .$type<CustomSnapshot>(),
+  parentDraft: text().references((): AnySQLiteColumn => drafts.id),
 });

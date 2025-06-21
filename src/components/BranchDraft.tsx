@@ -1,11 +1,11 @@
 import { Button } from "./ui/button";
-import { Save } from "lucide-react";
+import { GitBranchPlus } from "lucide-react";
 import usePartySocket from "partysocket/react";
 import { env } from "@/env/client";
-import type { SaveMessage } from "party";
+import type { BranchDraftMessage } from "party";
 import { useLoaderData } from "@tanstack/react-router";
 
-export function SaveDraft() {
+export function BranchDraft() {
   const draftId = useLoaderData({
     from: "/drafts/$draftId",
     select: (data) => data.draft.id,
@@ -33,11 +33,11 @@ export function SaveDraft() {
   });
 
   function handleClick() {
-    ws.send(JSON.stringify({ type: "save_message" } as SaveMessage));
+    ws.send(JSON.stringify({ type: "branch_draft" } as BranchDraftMessage));
   }
   return (
     <Button variant="outline" size="sm" onClick={handleClick}>
-      <Save /> Save Draft
+      <GitBranchPlus /> Branch Draft
     </Button>
   );
 }
