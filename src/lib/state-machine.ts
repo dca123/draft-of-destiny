@@ -12,6 +12,7 @@ type Picks = `PICK_${NumsGenerator<10>}`;
 
 export type Selections = Bans | Picks;
 export type Draft = Record<Selections, string>;
+
 export type ExportedMachineState = {
   side: "team_1" | "team_2";
   draft: Draft;
