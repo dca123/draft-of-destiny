@@ -4,6 +4,7 @@ import { generatePartyName } from "@/lib/random";
 import {
   machine,
   type ExportedMachineState,
+  type MachineValues,
   type Selections,
 } from "@/lib/state-machine";
 import { eq, sql } from "drizzle-orm";
@@ -28,7 +29,24 @@ export type BranchDraftMessage = {
   type: "branch_draft";
 };
 
+type HeroSelelectedBroadcast = {
+  type: "hero_selected";
+  state: MachineValues;
+} & ExportedMachineState;
+
+type DraftSavedBroadcast = {
+  type: "draft_saved";
+};
+type DraftBranchedBroadcast = {
+  type: "draft_branched";
+  id: string;
+};
+
 type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage;
+export type Broadcast =
+  | HeroSelelectedBroadcast
+  | DraftSavedBroadcast
+  | DraftBranchedBroadcast;
 
 export type CreateDraftMessage = {
   type: "create_draft";
@@ -59,7 +77,8 @@ export default class Server implements Party.Server {
       });
     }
     this.draftActor.subscribe((snapshot) => {
-      const payload = {
+      const payload: HeroSelelectedBroadcast = {
+        type: "hero_selected",
         ...snapshot.context,
         state: snapshot.value,
       };
@@ -100,6 +119,10 @@ export default class Server implements Party.Server {
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
+      const message: DraftSavedBroadcast = {
+        type: "draft_saved",
+      };
+      this.room.broadcast(JSON.stringify(message));
     } else if (parsedMessage.type === "branch_draft") {
       await upsertDraft({
         id: this.room.id,
@@ -107,11 +130,16 @@ export default class Server implements Party.Server {
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
-      await branchDraft({
+      const newDraft = await branchDraft({
         id: this.room.id,
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
+      const message: DraftBranchedBroadcast = {
+        type: "draft_branched",
+        id: newDraft.id,
+      };
+      this.room.broadcast(JSON.stringify(message));
     }
     console.log(`connection ${sender.id} sent message: ${message}`);
   }
@@ -155,7 +183,10 @@ async function branchDraft(opts: {
     .returning({
       id: drafts.id,
     });
-  return branchedDraft;
+  if (branchedDraft[0] === undefined) {
+    throw new Error(`Error branching draft ${opts.id}`);
+  }
+  return branchedDraft[0];
 }
 
 async function loadPersistedState(opts: { id: string }) {

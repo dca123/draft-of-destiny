@@ -42,7 +42,9 @@ function Home() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-3">
-        <h1 className="font-semibold text-2xl">Drafts of Destiny</h1>
+        <h1 className="font-semibold text-2xl tracking-wide">
+          Drafts of Destiny
+        </h1>
         <div>
           <Button>
             <Plus />

@@ -2,8 +2,9 @@ import { Button } from "./ui/button";
 import { Save } from "lucide-react";
 import usePartySocket from "partysocket/react";
 import { env } from "@/env/client";
-import type { SaveMessage } from "party";
+import type { Broadcast, SaveMessage } from "party";
 import { useLoaderData } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export function SaveDraft() {
   const draftId = useLoaderData({
@@ -13,7 +14,6 @@ export function SaveDraft() {
   const ws = usePartySocket({
     host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
     room: draftId,
-    // startClosed: true,
     query: () => ({
       draftName: "hellowWorld",
     }),
@@ -22,7 +22,10 @@ export function SaveDraft() {
       console.log("connected");
     },
     onMessage(e) {
-      console.log("message", e.data);
+      const message = JSON.parse(e.data) as Broadcast;
+      if (message.type === "draft_saved") {
+        toast("Draft saved");
+      }
     },
     onClose() {
       console.log("closed");

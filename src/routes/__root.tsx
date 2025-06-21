@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import appCss from "@/styles/app.css?url";
 import { getTheme } from "@/lib/theme";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -50,6 +51,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body className="flex flex-col min-h-screen">
         <main className="flex-grow p-8">{children}</main>
+        <Toaster position="top-center" />
         <Scripts />
       </body>
     </html>
