@@ -78,7 +78,7 @@ function RouteComponent() {
         </div>
       </div>
       <Separator className="mb-8 mt-2" />
-      <div className="flex flex-row justify-around ">
+      <div className="flex flex-row justify-evenly ">
         <div className="space-y-2">
           <div className="relative">
             <Input
