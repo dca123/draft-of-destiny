@@ -70,7 +70,7 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
     }),
 }));
 
-export const draftStateToHumanReadable = {
+export const machineValueToHumanReadable = {
   BAN_1: "Ban 1",
   BAN_2: "Ban 2",
   BAN_3: "Ban 3",

@@ -2,7 +2,7 @@ import { BranchDraft } from "@/components/BranchDraft";
 import { Draft } from "@/components/Draft";
 import { HeroGrid } from "@/components/HeroGrid";
 import {
-  draftStateToHumanReadable,
+  machineValueToHumanReadable,
   useLobbyStore,
 } from "@/components/lobby-state";
 import { SaveDraft } from "@/components/SaveDraft";
@@ -55,9 +55,9 @@ function RouteComponent() {
     <div>
       <div className="grid grid-cols-6 items-center">
         <div className="col-span-2 flex flex-row space-x-4 items-end">
-          <div className="flex flex-col space-y-0 pb-2">
+          <div className="flex flex-col space-y-0 pb-3">
             <label className="text-sm text-muted-foreground">Draft Name</label>
-            <p className="font-light text-lg tracking-wider">{draft.name}</p>
+            <p className="text-xl tracking-wider">{draft.name}</p>
           </div>
           <TeamSelect />
         </div>
@@ -89,7 +89,7 @@ function CurrentSelection() {
   return (
     <div className="bg-card border text-card-foreground p-2 rounded-md">
       <label className="text-sm text-muted-foreground">Current Selection</label>
-      <h1 className="">{draftStateToHumanReadable[state]}</h1>
+      <h1 className="">{machineValueToHumanReadable[state]}</h1>
     </div>
   );
 }

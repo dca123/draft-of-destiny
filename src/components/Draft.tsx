@@ -3,10 +3,11 @@ import { Button } from "./ui/button";
 import { useAtomValue } from "jotai";
 import { selectedHeroAtom } from "./hero-selection-state";
 import usePartySocket from "partysocket/react";
-import { useLobbyStore } from "./lobby-state";
+import { machineValueToHumanReadable, useLobbyStore } from "./lobby-state";
 import { env } from "@/env/client";
 import type { SelectHeroMessage } from "party";
 import { useLoaderData } from "@tanstack/react-router";
+import type { MachineValues } from "@/lib/state-machine";
 
 export function Draft() {
   const draftId = useLoaderData({
@@ -20,7 +21,7 @@ export function Draft() {
   const optimisticDraftUpdate = useLobbyStore(
     (state) => state.optimisticDraftUpdate,
   );
-  const draftState = useLobbyStore((state) => state.state); // renamed to avoid shadowing 'state'
+  const machineValue = useLobbyStore((state) => state.state); // renamed to avoid shadowing 'state'
 
   const ws = usePartySocket({
     host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
@@ -47,10 +48,18 @@ export function Draft() {
   });
 
   const selectedHero = useAtomValue(selectedHeroAtom);
+  function buttonText(machineValue: MachineValues) {
+    if (machineValue.startsWith("BAN")) {
+      return "Ban Hero";
+    } else if (machineValue.startsWith("PICK")) {
+      return "Pick Hero";
+    }
+    return "Draft Complete";
+  }
 
   function handleClick() {
     if (selectedHero === "") return;
-    optimisticDraftUpdate(draftState, selectedHero);
+    optimisticDraftUpdate(machineValue, selectedHero);
     const message = {
       type: "select_hero",
       payload: {
@@ -125,16 +134,20 @@ export function Draft() {
       </div>
       <Button
         onClick={handleClick}
-        disabled={selectedHero === "" || side !== playerSide}
+        disabled={
+          selectedHero === "" ||
+          side !== playerSide ||
+          machineValue === "DRAFT_END"
+        }
       >
-        Select Hero
+        {buttonText(machineValue)}
       </Button>
     </div>
   );
 }
 
 function HeroSlot(props: {
-  selectionId: string;
+  selectionId: MachineValues;
   shortName?: string;
   isPick: boolean;
   className?: string;
@@ -144,12 +157,10 @@ function HeroSlot(props: {
   return (
     <div
       className={cn(
-        "w-20 h-12 rounded-lg ",
+        "w-20 h-12 rounded-lg flex items-center justify-center",
         props.className,
-        props.isPick ? "border-blue-300" : "border-red-200",
-        props.selectionId === currentSelection
-          ? "border-2 border-purple-500"
-          : "border-1",
+        props.isPick ? "border-blue-300" : "border-red-300",
+        props.selectionId === currentSelection ? "border-3 " : "border",
       )}
     >
       {props.shortName ? (
@@ -157,7 +168,11 @@ function HeroSlot(props: {
           src={`https://courier.spectral.gg/images/dota/portraits/${props.shortName}`}
           className="rounded-lg p-1"
         />
-      ) : null}
+      ) : (
+        <p className="text-sm text-muted-foreground ">
+          {machineValueToHumanReadable[props.selectionId]}
+        </p>
+      )}
     </div>
   );
 }

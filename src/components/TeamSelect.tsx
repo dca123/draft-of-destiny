@@ -11,7 +11,7 @@ export function TeamSelect() {
   const updateTeamSelect = useLobbyStore((state) => state.setTeam);
 
   return (
-    <div>
+    <div className="flex flex-col space-y-1">
       <label className="text-sm text-muted-foreground">Your Team</label>
       <Select
         onValueChange={(val: "team_1" | "team_2") => updateTeamSelect(val)}
