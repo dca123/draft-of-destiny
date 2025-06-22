@@ -71,7 +71,7 @@ function RouteComponent() {
         </div>
       </div>
       <Separator className="mb-8 mt-2" />
-      <div className="flex flex-row justify-between ">
+      <div className="flex flex-row justify-around ">
         <div className="max-w-lg gap-1 flex flex-col">
           <HeroGrid heroes={heroes.STR} />
           <HeroGrid heroes={heroes.AGI} />

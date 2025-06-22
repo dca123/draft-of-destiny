@@ -70,6 +70,10 @@ export function Draft() {
   }
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex flex-row gap-2 ">
+        <h1 className="w-full text-center">Team 1</h1>
+        <h1 className="w-full text-center">Team 2</h1>
+      </div>
       <div className="grid grid-cols-2 grid-rows-4 gap-2 justify-end">
         <HeroSlot isPick={false} selectionId="BAN_1" shortName={draft.BAN_1} />
         <HeroSlot isPick={false} selectionId="BAN_2" shortName={draft.BAN_2} />
@@ -157,16 +161,25 @@ function HeroSlot(props: {
   return (
     <div
       className={cn(
-        "w-20 h-12 rounded-lg flex items-center justify-center",
+        "w-20 h-12 rounded-lg flex items-center justify-center relative",
         props.className,
-        props.isPick ? "border-blue-300" : "border-red-300",
-        props.selectionId === currentSelection ? "border-3 " : "border",
+        props.shortName === undefined
+          ? props.isPick
+            ? "border-blue-400 border"
+            : "border-red-400 border"
+          : "",
+        props.selectionId === currentSelection
+          ? "border-3 border-green-300"
+          : "",
       )}
     >
+      {props.shortName !== undefined && !props.isPick ? (
+        <div className="absolute inset-0 bg-red-700 opacity-50 rounded-lg mix-blend-hard-light" />
+      ) : null}
       {props.shortName ? (
         <img
           src={`https://courier.spectral.gg/images/dota/portraits/${props.shortName}`}
-          className="rounded-lg p-1"
+          className="rounded-lg object-cover"
         />
       ) : (
         <p className="text-sm text-muted-foreground ">

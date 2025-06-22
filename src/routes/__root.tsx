@@ -50,7 +50,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body className="flex flex-col min-h-screen">
-        <main className="flex-grow p-8">{children}</main>
+        <main className="flex-grow p-6">{children}</main>
         <Toaster position="top-center" />
         <Scripts />
       </body>

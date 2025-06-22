@@ -39,7 +39,6 @@ export function HeroGrid(props: {
           />
         </div>
       ))}
-      {props.heroes.length}
     </div>
   );
 }
