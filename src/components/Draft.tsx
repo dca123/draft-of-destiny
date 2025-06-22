@@ -70,6 +70,16 @@ export function Draft() {
   }
   return (
     <div className="flex flex-col gap-2">
+      <Button
+        onClick={handleClick}
+        disabled={
+          selectedHero === "" ||
+          side !== playerSide ||
+          machineValue === "DRAFT_END"
+        }
+      >
+        {buttonText(machineValue)}
+      </Button>
       <div className="flex flex-row gap-2 ">
         <h1 className="w-full text-center">Team 1</h1>
         <h1 className="w-full text-center">Team 2</h1>
@@ -136,16 +146,6 @@ export function Draft() {
           shortName={draft.PICK_10}
         />
       </div>
-      <Button
-        onClick={handleClick}
-        disabled={
-          selectedHero === "" ||
-          side !== playerSide ||
-          machineValue === "DRAFT_END"
-        }
-      >
-        {buttonText(machineValue)}
-      </Button>
     </div>
   );
 }
@@ -161,7 +161,7 @@ function HeroSlot(props: {
   return (
     <div
       className={cn(
-        "w-20 h-12 rounded-lg flex items-center justify-center relative",
+        "w-18 h-10 rounded-lg flex items-center justify-center relative",
         props.className,
         props.shortName === undefined
           ? props.isPick

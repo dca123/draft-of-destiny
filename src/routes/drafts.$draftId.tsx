@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import { BranchDraft } from "@/components/BranchDraft";
 import { Draft } from "@/components/Draft";
 import { HeroGrid } from "@/components/HeroGrid";
@@ -14,6 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { asc, eq } from "drizzle-orm";
+import { Input } from "@/components/ui/input";
+import { atom, useAtom, useSetAtom } from "jotai";
 
 type Heroes = typeof heroes.$inferSelect;
 const getHeroes = createServerFn().handler(async () => {
@@ -48,8 +51,11 @@ export const Route = createFileRoute("/drafts/$draftId")({
   },
 });
 
+export const SearchHeroAtom = atom("");
+
 function RouteComponent() {
   const { draft, heroes } = Route.useLoaderData();
+  const [heroSearch, setSearch] = useAtom(SearchHeroAtom);
 
   return (
     <div>
@@ -63,6 +69,7 @@ function RouteComponent() {
         </div>
         <div className="flex flex-row space-x-4 p-2 h-min items-center col-span-2 justify-self-center">
           <CurrentSelection />
+          <span className="text-xl">-</span>
           <CurrentSide />
         </div>
         <div className="col-span-2 justify-self-end space-x-2">
@@ -72,11 +79,23 @@ function RouteComponent() {
       </div>
       <Separator className="mb-8 mt-2" />
       <div className="flex flex-row justify-around ">
-        <div className="max-w-lg gap-1 flex flex-col">
-          <HeroGrid heroes={heroes.STR} />
-          <HeroGrid heroes={heroes.AGI} />
-          <HeroGrid heroes={heroes.INT} />
-          <HeroGrid heroes={heroes.ALL} />
+        <div className="space-y-2">
+          <div className="relative">
+            <Input
+              className="w-40 pl-8"
+              placeholder="Search"
+              onBlur={() => setSearch("")}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              value={heroSearch}
+            />
+            <Search className="absolute pointer-events-none top-1/2 -translate-y-1/2 left-2 size-4 opacity-50 select-none" />
+          </div>
+          <div className="max-w-5xl gap-4 grid grid-cols-2 h-min place-items-start">
+            <HeroGrid heroes={heroes.STR} />
+            <HeroGrid heroes={heroes.AGI} />
+            <HeroGrid heroes={heroes.INT} />
+            <HeroGrid heroes={heroes.ALL} />
+          </div>
         </div>
         <Draft />
       </div>
@@ -87,20 +106,14 @@ function RouteComponent() {
 function CurrentSelection() {
   const state = useLobbyStore((s) => s.state);
   return (
-    <div className="bg-card border text-card-foreground p-2 rounded-md">
-      <label className="text-sm text-muted-foreground">Current Selection</label>
-      <h1 className="">{machineValueToHumanReadable[state]}</h1>
-    </div>
+    <h1 className="text-xl font-semibold">
+      {machineValueToHumanReadable[state]}
+    </h1>
   );
 }
 
 function CurrentSide() {
   const side = useLobbyStore((s) => s.side);
   const displayText = side === "team_1" ? "Team 1" : "Team 2";
-  return (
-    <div className="bg-card border text-card-foreground p-2 rounded-md">
-      <label className="text-sm text-muted-foreground">Current Turn</label>
-      <h1>{displayText}</h1>
-    </div>
-  );
+  return <h1 className="text-xl font-semibold">{displayText}</h1>;
 }

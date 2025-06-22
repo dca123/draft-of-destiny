@@ -17,12 +17,12 @@ export function TeamSelect() {
         onValueChange={(val: "team_1" | "team_2") => updateTeamSelect(val)}
         defaultValue="team_1"
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[190px]">
           <SelectValue placeholder="Team" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="team_1">First Pick</SelectItem>
-          <SelectItem value="team_2">Second Pick</SelectItem>
+          <SelectItem value="team_1">Team 1 (First Pick)</SelectItem>
+          <SelectItem value="team_2">Team 2 (Second Pick)</SelectItem>
         </SelectContent>
       </Select>
     </div>
