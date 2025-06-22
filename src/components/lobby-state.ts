@@ -1,4 +1,4 @@
-import type { Draft, ExportedMachineState } from "@/lib/state-machine";
+import type { Draft } from "@/lib/state-machine";
 import type { LobbyUpdate } from "party";
 import { create } from "zustand";
 
@@ -69,6 +69,40 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
       lobbyName,
     }),
 }));
+
+export const draftStateToHumanReadable = {
+  BAN_1: "Ban 1",
+  BAN_2: "Ban 2",
+  BAN_3: "Ban 3",
+  BAN_4: "Ban 4",
+  BAN_5: "Ban 5",
+  BAN_6: "Ban 6",
+  BAN_7: "Ban 7",
+
+  PICK_1: "Pick 1",
+  PICK_2: "Pick 2",
+
+  BAN_8: "Ban 8",
+  BAN_9: "Ban 9",
+  BAN_10: "Ban 10",
+
+  PICK_3: "Pick 3",
+  PICK_4: "Pick 4",
+  PICK_5: "Pick 5",
+  PICK_6: "Pick 6",
+  PICK_7: "Pick 7",
+  PICK_8: "Pick 8",
+
+  BAN_11: "Ban 11",
+  BAN_12: "Ban 12",
+  BAN_13: "Ban 13",
+  BAN_14: "Ban 14",
+
+  PICK_9: "Pick 9",
+  PICK_10: "Pick 10",
+
+  DRAFT_END: "Draft Complete",
+};
 
 export function generatePartyName() {
   const adjectives = [

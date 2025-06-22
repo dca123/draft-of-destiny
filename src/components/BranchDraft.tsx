@@ -51,8 +51,13 @@ export function BranchDraft() {
     ws.send(JSON.stringify({ type: "branch_draft" } as BranchDraftMessage));
   }
   return (
-    <Button variant="outline" size="sm" onClick={handleClick}>
-      <GitBranchPlus /> Branch Draft
+    <Button
+      variant="secondary"
+      size="icon"
+      onClick={handleClick}
+      aria-description="Branch Draft"
+    >
+      <GitBranchPlus />
     </Button>
   );
 }

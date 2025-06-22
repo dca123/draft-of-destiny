@@ -1,12 +1,16 @@
 import { BranchDraft } from "@/components/BranchDraft";
 import { Draft } from "@/components/Draft";
 import { HeroGrid } from "@/components/HeroGrid";
-import { useLobbyStore } from "@/components/lobby-state";
+import {
+  draftStateToHumanReadable,
+  useLobbyStore,
+} from "@/components/lobby-state";
 import { SaveDraft } from "@/components/SaveDraft";
 import { TeamSelect } from "@/components/TeamSelect";
 import { appDb, dotaDb } from "@/db";
 import { heroes } from "@/db/dota-db-schema/heroesItems";
 import { drafts } from "@/db/schema/drafts";
+import { Separator } from "@/components/ui/separator";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { asc, eq } from "drizzle-orm";
@@ -49,19 +53,43 @@ function RouteComponent() {
 
   return (
     <div>
-      <TeamSelect />
-      <div className="flex flex-row justify-between">
+      <div className="grid grid-cols-6 items-center">
+        <div className="col-span-2 flex flex-row space-x-4 items-end">
+          <div className="flex flex-col space-y-0 pb-2">
+            <label className="text-sm text-muted-foreground">Draft Name</label>
+            <p className="font-light text-lg tracking-wider">{draft.name}</p>
+          </div>
+          <TeamSelect />
+        </div>
+        <div className="flex flex-row space-x-4 p-2 h-min items-center col-span-2 justify-self-center">
+          <CurrentSelection />
+          <CurrentSide />
+        </div>
+        <div className="col-span-2 justify-self-end space-x-2">
+          <SaveDraft />
+          <BranchDraft />
+        </div>
+      </div>
+      <Separator className="mb-8 mt-2" />
+      <div className="flex flex-row justify-between ">
         <div className="max-w-lg gap-1 flex flex-col">
           <HeroGrid heroes={heroes.STR} />
           <HeroGrid heroes={heroes.AGI} />
           <HeroGrid heroes={heroes.INT} />
           <HeroGrid heroes={heroes.ALL} />
         </div>
-        <CurrentSide />
-        <SaveDraft />
-        <BranchDraft />
         <Draft />
       </div>
+    </div>
+  );
+}
+
+function CurrentSelection() {
+  const state = useLobbyStore((s) => s.state);
+  return (
+    <div className="bg-card border text-card-foreground p-2 rounded-md">
+      <label className="text-sm text-muted-foreground">Current Selection</label>
+      <h1 className="">{draftStateToHumanReadable[state]}</h1>
     </div>
   );
 }
@@ -70,8 +98,9 @@ function CurrentSide() {
   const side = useLobbyStore((s) => s.side);
   const displayText = side === "team_1" ? "Team 1" : "Team 2";
   return (
-    <div>
-      <h1>{displayText}'s turn</h1>
+    <div className="bg-card border text-card-foreground p-2 rounded-md">
+      <label className="text-sm text-muted-foreground">Current Turn</label>
+      <h1>{displayText}</h1>
     </div>
   );
 }

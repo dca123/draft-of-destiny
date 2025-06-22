@@ -5,14 +5,13 @@ import {
   machine,
   type ExportedMachineState,
   type MachineValues,
-  type Selections,
 } from "@/lib/state-machine";
 import { eq, sql } from "drizzle-orm";
 import type * as Party from "partykit/server";
 import { Actor, type Snapshot } from "xstate";
 
 export type LobbyUpdate = ExportedMachineState & {
-  state: Selections;
+  state: MachineValues;
 };
 
 export type SaveMessage = {
@@ -95,6 +94,12 @@ export default class Server implements Party.Server {
 
     this.draftName = url.searchParams.get("draftName") ?? undefined;
     const snapshot = this.draftActor.getSnapshot();
+    const payload: HeroSelelectedBroadcast = {
+      type: "hero_selected",
+      ...snapshot.context,
+      state: snapshot.value,
+    };
+    conn.send(JSON.stringify(payload));
 
     console.log(
       `Connected:
@@ -104,7 +109,6 @@ export default class Server implements Party.Server {
   draftName: ${this.draftName}
   `,
     );
-    conn.send(JSON.stringify(snapshot.context));
   }
 
   async onMessage(message: string, sender: Party.Connection) {

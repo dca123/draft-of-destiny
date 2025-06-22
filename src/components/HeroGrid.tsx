@@ -22,10 +22,11 @@ export function HeroGrid(props: {
           />
           <img
             src={`https://courier.spectral.gg/images/dota/portraits_vert/${hero.shortName}?size=smaller`}
-            className="rounded object-cover"
+            className="rounded object-cover w-12"
           />
         </div>
       ))}
+      {props.heroes.length}
     </div>
   );
 }

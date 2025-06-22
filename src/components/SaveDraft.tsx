@@ -39,8 +39,8 @@ export function SaveDraft() {
     ws.send(JSON.stringify({ type: "save_message" } as SaveMessage));
   }
   return (
-    <Button variant="outline" size="sm" onClick={handleClick}>
-      <Save /> Save Draft
+    <Button variant="secondary" size="icon" onClick={handleClick}>
+      <Save />
     </Button>
   );
 }

@@ -60,8 +60,8 @@ export function Draft() {
     ws.send(JSON.stringify(message));
   }
   return (
-    <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-2 grid-rows-4 gap-3 justify-end">
+    <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 grid-rows-4 gap-2 justify-end">
         <HeroSlot isPick={false} selectionId="BAN_1" shortName={draft.BAN_1} />
         <HeroSlot isPick={false} selectionId="BAN_2" shortName={draft.BAN_2} />
         <HeroSlot isPick={false} selectionId="BAN_4" shortName={draft.BAN_4} />
@@ -75,7 +75,7 @@ export function Draft() {
           shortName={draft.BAN_6}
         />
       </div>
-      <div className="grid grid-cols-2 grid-rows-3 gap-3 justify-end">
+      <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
         <HeroSlot isPick={true} selectionId="PICK_1" shortName={draft.PICK_1} />
         <HeroSlot isPick={true} selectionId="PICK_2" shortName={draft.PICK_2} />
 
@@ -87,7 +87,7 @@ export function Draft() {
         />
         <HeroSlot isPick={false} selectionId="BAN_9" shortName={draft.BAN_9} />
       </div>
-      <div className="grid grid-cols-2 grid-rows-3 gap-3 justify-end">
+      <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
         <HeroSlot isPick={true} selectionId="PICK_4" shortName={draft.PICK_4} />
         <HeroSlot isPick={true} selectionId="PICK_3" shortName={draft.PICK_3} />
         <HeroSlot isPick={true} selectionId="PICK_5" shortName={draft.PICK_5} />
@@ -139,12 +139,17 @@ function HeroSlot(props: {
   isPick: boolean;
   className?: string;
 }) {
+  const currentSelection = useLobbyStore((state) => state.state);
+  console.log(currentSelection);
   return (
     <div
       className={cn(
-        "w-24 border-2 rounded-lg h-15",
+        "w-20 h-12 rounded-lg ",
         props.className,
         props.isPick ? "border-blue-300" : "border-red-200",
+        props.selectionId === currentSelection
+          ? "border-2 border-purple-500"
+          : "border-1",
       )}
     >
       {props.shortName ? (
