@@ -16,6 +16,7 @@ import type { FormEvent } from "react";
 import PartySocket from "partysocket";
 import { generateDraftId } from "@/db/schema/drafts";
 import type { CreateDraftMessage } from "party";
+import { env } from "@/env/client";
 
 export const Route = createFileRoute("/drafts/new")({
   component: RouteComponent,
@@ -30,7 +31,7 @@ function RouteComponent() {
     if (draftName === null) return;
     const response = await PartySocket.fetch(
       {
-        host: "localhost:1999",
+        host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
         room: generateDraftId(),
       },
       {

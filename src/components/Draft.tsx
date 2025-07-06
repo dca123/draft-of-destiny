@@ -157,7 +157,6 @@ function HeroSlot(props: {
   className?: string;
 }) {
   const currentSelection = useLobbyStore((state) => state.state);
-  console.log(currentSelection);
   return (
     <div
       className={cn(
