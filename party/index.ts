@@ -116,6 +116,12 @@ export default class Server implements Party.Server {
     const parsedMessage = JSON.parse(message) as Message;
     if (parsedMessage.type === "select_hero") {
       this.draftActor.send({ type: "NEXT", hero: parsedMessage.payload.hero });
+      await upsertDraft({
+        id: this.room.id,
+        name: this.draftName ?? "",
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
+      });
     } else if (parsedMessage.type === "save_message") {
       await upsertDraft({
         id: this.room.id,
@@ -126,6 +132,7 @@ export default class Server implements Party.Server {
       const message: DraftSavedBroadcast = {
         type: "draft_saved",
       };
+
       this.room.broadcast(JSON.stringify(message));
     } else if (parsedMessage.type === "branch_draft") {
       await upsertDraft({
@@ -136,6 +143,7 @@ export default class Server implements Party.Server {
       });
       const newDraft = await branchDraft({
         id: this.room.id,
+        name: this.draftName ?? "",
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
@@ -161,7 +169,7 @@ export default class Server implements Party.Server {
       return new Response(JSON.stringify({ id: result.id }), {
         status: 200,
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
         },
@@ -174,9 +182,10 @@ export default class Server implements Party.Server {
 
 async function branchDraft(opts: {
   id: string;
+  name: string;
   persistedMachineSnapshot: CustomSnapshot;
 }) {
-  const name = `${opts.id}.${generatePartyName()}`;
+  const name = `${opts.name}.${generatePartyName()}`;
   const branchedDraft = await appDb
     .insert(drafts)
     .values({

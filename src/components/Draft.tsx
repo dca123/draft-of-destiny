@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { selectedHeroAtom } from "./hero-selection-state";
 import usePartySocket from "partysocket/react";
 import { machineValueToHumanReadable, useLobbyStore } from "./lobby-state";
@@ -43,11 +43,11 @@ export function Draft() {
       console.log("closed");
     },
     onError(e) {
-      console.log("error");
+      console.log("error", e);
     },
   });
 
-  const selectedHero = useAtomValue(selectedHeroAtom);
+  const [selectedHero, setSelectedHero] = useAtom(selectedHeroAtom);
   function buttonText(machineValue: MachineValues) {
     if (machineValue.startsWith("BAN")) {
       return "Ban Hero";
@@ -60,6 +60,8 @@ export function Draft() {
   function handleClick() {
     if (selectedHero === "") return;
     optimisticDraftUpdate(machineValue, selectedHero);
+    setSelectedHero("");
+
     const message = {
       type: "select_hero",
       payload: {

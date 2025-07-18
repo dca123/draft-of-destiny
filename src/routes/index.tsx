@@ -41,17 +41,10 @@ function Home() {
   const drafts = Route.useLoaderData();
   return (
     <div className="space-y-6">
-      <div className="flex flex-col space-y-3">
-        <h1 className="font-semibold text-2xl tracking-wide">
-          Drafts of Destiny
-        </h1>
-        <div>
-          <Button>
-            <Plus />
-            <Link to={"/drafts/new"}>Create Draft</Link>
-          </Button>
-        </div>
-      </div>
+      <Button>
+        <Plus />
+        <Link to={"/drafts/new"}>Create Draft</Link>
+      </Button>
       <div className="grid gap-4 grid-cols-4">
         {drafts.map((draft) => (
           <DraftCard
@@ -67,7 +60,7 @@ function Home() {
   );
 }
 
-function DraftCard(props: {
+export function DraftCard(props: {
   draft: TeamSelections;
   name: string;
   id: string;
@@ -76,19 +69,20 @@ function DraftCard(props: {
   return (
     <Card>
       <CardHeader className="items-center">
-        <CardTitle className="row-span-2">{props.name}</CardTitle>
-        <CardAction>
-          <Button variant="link" asChild>
-            <Link to="/drafts/$draftId" params={{ draftId: props.id }}>
-              Open
-              <ChevronRight />
-            </Link>
-          </Button>
-        </CardAction>
+        <CardTitle className="row-span-2">
+          <Link
+            to="/drafts/$draftId"
+            params={{ draftId: props.id }}
+            className="flex flex-row justify-between items-center hover:underline underline-offset-4"
+          >
+            {props.name}
+            <ChevronRight className="size-4" />
+          </Link>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-4">
         <div className="space-y-0.5">
-          <p className="text-sm text-muted-foreground"> Radiant</p>
+          <p className="text-sm text-muted-foreground">First Pick</p>
           <div className="space-y-1">
             <div className="flex flex-row space-x-1">
               {props.draft.team_1_bans.map((hero) => (
@@ -103,7 +97,7 @@ function DraftCard(props: {
           </div>
         </div>
         <div className="space-y-0.5">
-          <p className="text-sm text-muted-foreground">Dire</p>
+          <p className="text-sm text-muted-foreground">Second Pick</p>
           <div className="space-y-1">
             <div className="flex flex-row space-x-1">
               {props.draft.team_2_bans.map((hero) => (
@@ -138,9 +132,9 @@ function BannedHero(props: { shortName: string }) {
     <div className="relative">
       <img
         src={`https://courier.spectral.gg/images/dota/portraits/${props.shortName}?size=smaller`}
-        className="rounded-lg w-12"
+        className="rounded w-12"
       />
-      <div className="absolute inset-0 bg-red-700 opacity-50 rounded-lg mix-blend-hard-light" />
+      <div className="absolute inset-0 bg-red-700 opacity-50 rounded mix-blend-hard-light" />
     </div>
   );
 }
