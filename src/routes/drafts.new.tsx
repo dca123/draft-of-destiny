@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { generatePartyName } from "@/lib/random";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { Loader2 } from "lucide-react";
 import PartySocket from "partysocket";
 import { generateDraftId } from "@/db/schema/drafts";
 import type { CreateDraftMessage } from "party";
@@ -24,35 +24,50 @@ export const Route = createFileRoute("/drafts/new")({
 
 function RouteComponent() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const draftName = data.get("name");
-    if (draftName === null) return;
-    const response = await PartySocket.fetch(
-      {
-        host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
-        room: generateDraftId(),
-      },
-      {
-        method: "POST",
-        body: JSON.stringify({
-          type: "create_draft",
-          paylaod: {
-            name: draftName.toString(),
-          },
-        } satisfies CreateDraftMessage),
-      },
-    );
-    if (response.status === 200) {
-      const payload = (await response.json()) as { id: string };
-      console.log("payload", payload);
-      navigate({
-        to: "/drafts/$draftId",
-        params: {
-          draftId: payload.id,
+    setIsLoading(true);
+    
+    try {
+      const data = new FormData(e.currentTarget);
+      const draftName = data.get("name");
+      if (draftName === null) {
+        setIsLoading(false);
+        return;
+      }
+      
+      const response = await PartySocket.fetch(
+        {
+          host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
+          room: generateDraftId(),
         },
-      });
+        {
+          method: "POST",
+          body: JSON.stringify({
+            type: "create_draft",
+            paylaod: {
+              name: draftName.toString(),
+            },
+          } satisfies CreateDraftMessage),
+        },
+      );
+      if (response.status === 200) {
+        const payload = (await response.json()) as { id: string };
+        console.log("payload", payload);
+        navigate({
+          to: "/drafts/$draftId",
+          params: {
+            draftId: payload.id,
+          },
+        });
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error creating lobby:", error);
+      setIsLoading(false);
     }
   };
 
@@ -75,13 +90,21 @@ function RouteComponent() {
                   id="name"
                   defaultValue={generatePartyName()}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Create Lobby
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Lobby"
+              )}
             </Button>
           </CardFooter>
         </Card>
