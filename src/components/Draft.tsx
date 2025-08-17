@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { selectedHeroAtom } from "./hero-selection-state";
 import usePartySocket from "partysocket/react";
 import { machineValueToHumanReadable, useLobbyStore } from "./lobby-state";
@@ -8,6 +8,23 @@ import { env } from "@/env/client";
 import type { SelectHeroMessage } from "party";
 import { useLoaderData } from "@tanstack/react-router";
 import type { MachineValues } from "@/lib/state-machine";
+
+const BAN_SELECTIONS = new Set([
+  "SELECTION_1",
+  "SELECTION_2",
+  "SELECTION_3",
+  "SELECTION_4",
+  "SELECTION_5",
+  "SELECTION_6",
+  "SELECTION_7",
+  "SELECTION_10",
+  "SELECTION_11",
+  "SELECTION_12",
+  "SELECTION_19",
+  "SELECTION_20",
+  "SELECTION_21",
+  "SELECTION_22",
+]);
 
 export function Draft() {
   const draftId = useLoaderData({
@@ -52,15 +69,6 @@ export function Draft() {
     if (machineValue === "DRAFT_END") {
       return "Draft Complete";
     }
-    
-    // Check if this selection is a ban or a pick based on the selection number
-    const BAN_SELECTIONS = new Set([
-      "SELECTION_1", "SELECTION_2", "SELECTION_3", "SELECTION_4", 
-      "SELECTION_5", "SELECTION_6", "SELECTION_7", "SELECTION_10", 
-      "SELECTION_11", "SELECTION_12", "SELECTION_19", "SELECTION_20", 
-      "SELECTION_21", "SELECTION_22"
-    ]);
-    
     return BAN_SELECTIONS.has(machineValue) ? "Ban Hero" : "Pick Hero";
   }
 
@@ -94,12 +102,36 @@ export function Draft() {
         <h1 className="w-full text-center">Team 2</h1>
       </div>
       <div className="grid grid-cols-2 grid-rows-4 gap-2 justify-end">
-        <HeroSlot isPick={false} selectionId="SELECTION_1" shortName={draft.SELECTION_1} />
-        <HeroSlot isPick={false} selectionId="SELECTION_2" shortName={draft.SELECTION_2} />
-        <HeroSlot isPick={false} selectionId="SELECTION_4" shortName={draft.SELECTION_4} />
-        <HeroSlot isPick={false} selectionId="SELECTION_3" shortName={draft.SELECTION_3} />
-        <HeroSlot isPick={false} selectionId="SELECTION_7" shortName={draft.SELECTION_7} />
-        <HeroSlot isPick={false} selectionId="SELECTION_5" shortName={draft.SELECTION_5} />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_1"
+          shortName={draft.SELECTION_1}
+        />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_2"
+          shortName={draft.SELECTION_2}
+        />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_4"
+          shortName={draft.SELECTION_4}
+        />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_3"
+          shortName={draft.SELECTION_3}
+        />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_7"
+          shortName={draft.SELECTION_7}
+        />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_5"
+          shortName={draft.SELECTION_5}
+        />
         <HeroSlot
           className="col-start-2"
           isPick={false}
@@ -108,24 +140,64 @@ export function Draft() {
         />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
-        <HeroSlot isPick={true} selectionId="SELECTION_8" shortName={draft.SELECTION_8} />
-        <HeroSlot isPick={true} selectionId="SELECTION_9" shortName={draft.SELECTION_9} />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_8"
+          shortName={draft.SELECTION_8}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_9"
+          shortName={draft.SELECTION_9}
+        />
 
-        <HeroSlot isPick={false} selectionId="SELECTION_10" shortName={draft.SELECTION_10} />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_10"
+          shortName={draft.SELECTION_10}
+        />
         <HeroSlot
           isPick={false}
           selectionId="SELECTION_12"
           shortName={draft.SELECTION_12}
         />
-        <HeroSlot isPick={false} selectionId="SELECTION_11" shortName={draft.SELECTION_11} />
+        <HeroSlot
+          isPick={false}
+          selectionId="SELECTION_11"
+          shortName={draft.SELECTION_11}
+        />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
-        <HeroSlot isPick={true} selectionId="SELECTION_14" shortName={draft.SELECTION_14} />
-        <HeroSlot isPick={true} selectionId="SELECTION_13" shortName={draft.SELECTION_13} />
-        <HeroSlot isPick={true} selectionId="SELECTION_15" shortName={draft.SELECTION_15} />
-        <HeroSlot isPick={true} selectionId="SELECTION_16" shortName={draft.SELECTION_16} />
-        <HeroSlot isPick={true} selectionId="SELECTION_18" shortName={draft.SELECTION_18} />
-        <HeroSlot isPick={true} selectionId="SELECTION_17" shortName={draft.SELECTION_17} />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_14"
+          shortName={draft.SELECTION_14}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_13"
+          shortName={draft.SELECTION_13}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_15"
+          shortName={draft.SELECTION_15}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_16"
+          shortName={draft.SELECTION_16}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_18"
+          shortName={draft.SELECTION_18}
+        />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_17"
+          shortName={draft.SELECTION_17}
+        />
 
         <HeroSlot
           isPick={false}
@@ -148,7 +220,11 @@ export function Draft() {
           shortName={draft.SELECTION_21}
         />
 
-        <HeroSlot isPick={true} selectionId="SELECTION_23" shortName={draft.SELECTION_23} />
+        <HeroSlot
+          isPick={true}
+          selectionId="SELECTION_23"
+          shortName={draft.SELECTION_23}
+        />
         <HeroSlot
           isPick={true}
           selectionId="SELECTION_24"

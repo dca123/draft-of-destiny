@@ -163,12 +163,26 @@ const columns = [
   columnHelper.accessor("team_one_bans", {
     header: "First Pick Bans",
     cell: (props) => {
-      const heroes = props.getValue();
+      const firstPhaseBans = props.getValue().slice(0, 3);
+      const secondPhaseBans = props.getValue().slice(3, 5);
+      const thirdPhaseBans = props.getValue().slice(5);
       return (
-        <div className="flex flex-row gap-2 flex-wrap">
-          {heroes.map((hero) => (
-            <BannedHero shortName={hero} />
-          ))}
+        <div className="flex flex-row gap-2 place-items-center">
+          <div className="grid grid-cols-2 grid-rows-2 gap-1">
+            {firstPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-1">
+            {secondPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-1">
+            {thirdPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
         </div>
       );
     },
@@ -201,12 +215,26 @@ const columns = [
   columnHelper.accessor("team_two_bans", {
     header: "Second Pick Bans",
     cell: (props) => {
-      const heroes = props.getValue();
+      const firstPhaseBans = props.getValue().slice(0, 4);
+      const secondPhaseBans = props.getValue().slice(4, 5);
+      const thirdPhaseBans = props.getValue().slice(5);
       return (
-        <div className="flex flex-row gap-2 flex-wrap">
-          {heroes.map((hero) => (
-            <BannedHero shortName={hero} />
-          ))}
+        <div className="grid grid-cols-3 gap-2 place-items-center">
+          <div className="grid grid-cols-2 grid-rows-2 gap-1">
+            {firstPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-1 flex-wrap w-min">
+            {secondPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-1 flex-wrap">
+            {thirdPhaseBans.map((hero) => (
+              <BannedHero shortName={hero} />
+            ))}
+          </div>
         </div>
       );
     },
@@ -235,10 +263,10 @@ function PickedHero(props: { shortName: string | undefined }) {
 }
 function BannedHero(props: { shortName: string }) {
   return (
-    <div className="relative">
+    <div className="relative h-fit w-10">
       <img
         src={`https://courier.spectral.gg/images/dota/portraits/${props.shortName}?size=smaller`}
-        className="rounded w-12"
+        className="rounded w-10"
       />
       <div className="absolute inset-0 bg-red-700 opacity-50 rounded mix-blend-hard-light" />
     </div>
