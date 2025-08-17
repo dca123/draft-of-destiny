@@ -7,10 +7,7 @@ type NumsGenerator<
 > = T extends R["length"]
   ? Re | R["length"]
   : NumsGenerator<T, [...R, unknown], Re | R["length"]>;
-type Bans = `BAN_${NumsGenerator<14>}`;
-type Picks = `PICK_${NumsGenerator<10>}`;
-
-export type Selections = Bans | Picks;
+export type Selections = `SELECTION_${NumsGenerator<24>}`;
 export type Draft = Record<Selections, string>;
 
 export type MachineValues = Selections | "DRAFT_END";
@@ -23,36 +20,36 @@ export type TeamSelections = ReturnType<typeof draftToTeamSelections>;
 export function draftToTeamSelections(opts: { draft: Draft }) {
   const selections = {
     team_1_picks: [
-      opts.draft.PICK_1,
-      opts.draft.PICK_4,
-      opts.draft.PICK_5,
-      opts.draft.PICK_8,
-      opts.draft.PICK_9,
+      opts.draft.SELECTION_8,
+      opts.draft.SELECTION_13,
+      opts.draft.SELECTION_14,
+      opts.draft.SELECTION_19,
+      opts.draft.SELECTION_23,
     ],
     team_2_picks: [
-      opts.draft.PICK_2,
-      opts.draft.PICK_3,
-      opts.draft.PICK_6,
-      opts.draft.PICK_7,
-      opts.draft.PICK_10,
+      opts.draft.SELECTION_9,
+      opts.draft.SELECTION_12,
+      opts.draft.SELECTION_15,
+      opts.draft.SELECTION_16,
+      opts.draft.SELECTION_24,
     ],
     team_1_bans: [
-      opts.draft.BAN_1,
-      opts.draft.BAN_4,
-      opts.draft.BAN_7,
-      opts.draft.BAN_8,
-      opts.draft.BAN_9,
-      opts.draft.BAN_11,
-      opts.draft.BAN_14,
+      opts.draft.SELECTION_1,
+      opts.draft.SELECTION_4,
+      opts.draft.SELECTION_7,
+      opts.draft.SELECTION_10,
+      opts.draft.SELECTION_11,
+      opts.draft.SELECTION_17,
+      opts.draft.SELECTION_22,
     ],
     team_2_bans: [
-      opts.draft.BAN_2,
-      opts.draft.BAN_3,
-      opts.draft.BAN_5,
-      opts.draft.BAN_6,
-      opts.draft.BAN_10,
-      opts.draft.BAN_12,
-      opts.draft.BAN_13,
+      opts.draft.SELECTION_2,
+      opts.draft.SELECTION_3,
+      opts.draft.SELECTION_5,
+      opts.draft.SELECTION_6,
+      opts.draft.SELECTION_18,
+      opts.draft.SELECTION_20,
+      opts.draft.SELECTION_21,
     ],
   };
   return selections;
@@ -85,234 +82,234 @@ export const machine = setup({
       pickIdx: ({ context }) => context.pickIdx + 1,
       draft: ({ context, event }) => ({
         ...context.draft,
-        [`PICK_${context.pickIdx}`]: event.hero,
+        [`SELECTION_${context.pickIdx}`]: event.hero,
       }),
     }),
     addToBans: assign({
       banIdx: ({ context }) => context.banIdx + 1,
       draft: ({ context, event }) => ({
         ...context.draft,
-        [`BAN_${context.banIdx}`]: event.hero,
+        [`SELECTION_${context.banIdx}`]: event.hero,
       }),
     }),
   },
 }).createMachine({
-  initial: "BAN_1",
+  initial: "SELECTION_1",
   context: {
     side: "team_1",
     banIdx: 1,
     pickIdx: 1,
-    draft: {} as Record<Picks | Bans, string>,
+    draft: {} as Draft,
   },
   states: {
-    BAN_1: {
+    SELECTION_1: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_2",
+          target: "SELECTION_2",
           actions: "addToBans",
         },
       },
     },
-    BAN_2: {
+    SELECTION_2: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_3",
+          target: "SELECTION_3",
           actions: "addToBans",
         },
       },
     },
-    BAN_3: {
+    SELECTION_3: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_4",
+          target: "SELECTION_4",
           actions: "addToBans",
         },
       },
     },
-    BAN_4: {
+    SELECTION_4: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_5",
+          target: "SELECTION_5",
           actions: "addToBans",
         },
       },
     },
-    BAN_5: {
+    SELECTION_5: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_6",
+          target: "SELECTION_6",
           actions: "addToBans",
         },
       },
     },
-    BAN_6: {
+    SELECTION_6: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_7",
+          target: "SELECTION_7",
           actions: "addToBans",
         },
       },
     },
-    BAN_7: {
+    SELECTION_7: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_1",
+          target: "SELECTION_8",
           actions: "addToBans",
         },
       },
     },
-    PICK_1: {
+    SELECTION_8: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_2",
+          target: "SELECTION_9",
           actions: "addToPicks",
         },
       },
     },
-    PICK_2: {
+    SELECTION_9: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_8",
+          target: "SELECTION_10",
           actions: "addToPicks",
         },
       },
     },
-    BAN_8: {
+    SELECTION_10: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_9",
+          target: "SELECTION_11",
           actions: "addToBans",
         },
       },
     },
-    BAN_9: {
+    SELECTION_11: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_10",
+          target: "SELECTION_12",
           actions: "addToBans",
         },
       },
     },
-    BAN_10: {
+    SELECTION_12: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "PICK_3",
+          target: "SELECTION_13",
           actions: "addToBans",
         },
       },
     },
-    PICK_3: {
+    SELECTION_13: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "PICK_4",
+          target: "SELECTION_14",
           actions: "addToPicks",
         },
       },
     },
-    PICK_4: {
+    SELECTION_14: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_5",
+          target: "SELECTION_15",
           actions: "addToPicks",
         },
       },
     },
-    PICK_5: {
+    SELECTION_15: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_6",
+          target: "SELECTION_16",
           actions: "addToPicks",
         },
       },
     },
-    PICK_6: {
+    SELECTION_16: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "PICK_7",
+          target: "SELECTION_17",
           actions: "addToPicks",
         },
       },
     },
-    PICK_7: {
+    SELECTION_17: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "PICK_8",
+          target: "SELECTION_18",
           actions: "addToPicks",
         },
       },
     },
-    PICK_8: {
+    SELECTION_18: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_11",
+          target: "SELECTION_19",
           actions: "addToPicks",
         },
       },
     },
-    BAN_11: {
+    SELECTION_19: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "BAN_12",
+          target: "SELECTION_20",
           actions: "addToBans",
         },
       },
     },
-    BAN_12: {
+    SELECTION_20: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_13",
+          target: "SELECTION_21",
           actions: "addToBans",
         },
       },
     },
-    BAN_13: {
+    SELECTION_21: {
       entry: "setSideTeam2",
       on: {
         NEXT: {
-          target: "BAN_14",
+          target: "SELECTION_22",
           actions: "addToBans",
         },
       },
     },
-    BAN_14: {
+    SELECTION_22: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_9",
+          target: "SELECTION_23",
           actions: "addToBans",
         },
       },
     },
-    PICK_9: {
+    SELECTION_23: {
       entry: "setSideTeam1",
       on: {
         NEXT: {
-          target: "PICK_10",
+          target: "SELECTION_24",
           actions: "addToPicks",
         },
       },
     },
-    PICK_10: {
+    SELECTION_24: {
       entry: "setSideTeam2",
       on: {
         NEXT: {

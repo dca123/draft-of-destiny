@@ -49,12 +49,11 @@ export function Draft() {
 
   const [selectedHero, setSelectedHero] = useAtom(selectedHeroAtom);
   function buttonText(machineValue: MachineValues) {
-    if (machineValue.startsWith("BAN")) {
-      return "Ban Hero";
-    } else if (machineValue.startsWith("PICK")) {
-      return "Pick Hero";
+    if (machineValue === "DRAFT_END") {
+      return "Draft Complete";
     }
-    return "Draft Complete";
+    
+    return "Select Hero";
   }
 
   function handleClick() {
@@ -87,65 +86,65 @@ export function Draft() {
         <h1 className="w-full text-center">Team 2</h1>
       </div>
       <div className="grid grid-cols-2 grid-rows-4 gap-2 justify-end">
-        <HeroSlot isPick={false} selectionId="BAN_1" shortName={draft.BAN_1} />
-        <HeroSlot isPick={false} selectionId="BAN_2" shortName={draft.BAN_2} />
-        <HeroSlot isPick={false} selectionId="BAN_4" shortName={draft.BAN_4} />
-        <HeroSlot isPick={false} selectionId="BAN_3" shortName={draft.BAN_3} />
-        <HeroSlot isPick={false} selectionId="BAN_7" shortName={draft.BAN_7} />
-        <HeroSlot isPick={false} selectionId="BAN_5" shortName={draft.BAN_5} />
+        <HeroSlot isPick={false} selectionId="SELECTION_1" shortName={draft.SELECTION_1} />
+        <HeroSlot isPick={false} selectionId="SELECTION_2" shortName={draft.SELECTION_2} />
+        <HeroSlot isPick={false} selectionId="SELECTION_4" shortName={draft.SELECTION_4} />
+        <HeroSlot isPick={false} selectionId="SELECTION_3" shortName={draft.SELECTION_3} />
+        <HeroSlot isPick={false} selectionId="SELECTION_7" shortName={draft.SELECTION_7} />
+        <HeroSlot isPick={false} selectionId="SELECTION_5" shortName={draft.SELECTION_5} />
         <HeroSlot
           className="col-start-2"
           isPick={false}
-          selectionId="BAN_6"
-          shortName={draft.BAN_6}
+          selectionId="SELECTION_6"
+          shortName={draft.SELECTION_6}
         />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
-        <HeroSlot isPick={true} selectionId="PICK_1" shortName={draft.PICK_1} />
-        <HeroSlot isPick={true} selectionId="PICK_2" shortName={draft.PICK_2} />
+        <HeroSlot isPick={true} selectionId="SELECTION_8" shortName={draft.SELECTION_8} />
+        <HeroSlot isPick={true} selectionId="SELECTION_9" shortName={draft.SELECTION_9} />
 
-        <HeroSlot isPick={false} selectionId="BAN_8" shortName={draft.BAN_8} />
+        <HeroSlot isPick={false} selectionId="SELECTION_10" shortName={draft.SELECTION_10} />
         <HeroSlot
           isPick={false}
-          selectionId="BAN_10"
-          shortName={draft.BAN_10}
+          selectionId="SELECTION_12"
+          shortName={draft.SELECTION_12}
         />
-        <HeroSlot isPick={false} selectionId="BAN_9" shortName={draft.BAN_9} />
+        <HeroSlot isPick={false} selectionId="SELECTION_11" shortName={draft.SELECTION_11} />
       </div>
       <div className="grid grid-cols-2 grid-rows-3 gap-2 justify-end">
-        <HeroSlot isPick={true} selectionId="PICK_4" shortName={draft.PICK_4} />
-        <HeroSlot isPick={true} selectionId="PICK_3" shortName={draft.PICK_3} />
-        <HeroSlot isPick={true} selectionId="PICK_5" shortName={draft.PICK_5} />
-        <HeroSlot isPick={true} selectionId="PICK_6" shortName={draft.PICK_6} />
-        <HeroSlot isPick={true} selectionId="PICK_8" shortName={draft.PICK_8} />
-        <HeroSlot isPick={true} selectionId="PICK_7" shortName={draft.PICK_7} />
+        <HeroSlot isPick={true} selectionId="SELECTION_14" shortName={draft.SELECTION_14} />
+        <HeroSlot isPick={true} selectionId="SELECTION_13" shortName={draft.SELECTION_13} />
+        <HeroSlot isPick={true} selectionId="SELECTION_15" shortName={draft.SELECTION_15} />
+        <HeroSlot isPick={true} selectionId="SELECTION_16" shortName={draft.SELECTION_16} />
+        <HeroSlot isPick={true} selectionId="SELECTION_18" shortName={draft.SELECTION_18} />
+        <HeroSlot isPick={true} selectionId="SELECTION_17" shortName={draft.SELECTION_17} />
 
         <HeroSlot
           isPick={false}
-          selectionId="BAN_11"
-          shortName={draft.BAN_11}
+          selectionId="SELECTION_19"
+          shortName={draft.SELECTION_19}
         />
         <HeroSlot
           isPick={false}
-          selectionId="BAN_12"
-          shortName={draft.BAN_12}
+          selectionId="SELECTION_20"
+          shortName={draft.SELECTION_20}
         />
         <HeroSlot
           isPick={false}
-          selectionId="BAN_14"
-          shortName={draft.BAN_14}
+          selectionId="SELECTION_22"
+          shortName={draft.SELECTION_22}
         />
         <HeroSlot
           isPick={false}
-          selectionId="BAN_13"
-          shortName={draft.BAN_13}
+          selectionId="SELECTION_21"
+          shortName={draft.SELECTION_21}
         />
 
-        <HeroSlot isPick={true} selectionId="PICK_9" shortName={draft.PICK_9} />
+        <HeroSlot isPick={true} selectionId="SELECTION_23" shortName={draft.SELECTION_23} />
         <HeroSlot
           isPick={true}
-          selectionId="PICK_10"
-          shortName={draft.PICK_10}
+          selectionId="SELECTION_24"
+          shortName={draft.SELECTION_24}
         />
       </div>
     </div>
