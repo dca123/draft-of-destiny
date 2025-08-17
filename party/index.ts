@@ -6,9 +6,9 @@ import {
   type ExportedMachineState,
   type MachineValues,
 } from "@/lib/state-machine";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type * as Party from "partykit/server";
-import { Actor, type Snapshot } from "xstate";
+import { Actor } from "xstate";
 
 export type LobbyUpdate = ExportedMachineState & {
   state: MachineValues;
@@ -28,6 +28,10 @@ export type BranchDraftMessage = {
   type: "branch_draft";
 };
 
+export type UndoMessage = {
+  type: "undo";
+};
+
 type HeroSelelectedBroadcast = {
   type: "hero_selected";
   state: MachineValues;
@@ -41,7 +45,7 @@ type DraftBranchedBroadcast = {
   id: string;
 };
 
-type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage;
+type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage | UndoMessage;
 export type Broadcast =
   | HeroSelelectedBroadcast
   | DraftSavedBroadcast
@@ -116,6 +120,14 @@ export default class Server implements Party.Server {
     const parsedMessage = JSON.parse(message) as Message;
     if (parsedMessage.type === "select_hero") {
       this.draftActor.send({ type: "NEXT", hero: parsedMessage.payload.hero });
+      await upsertDraft({
+        id: this.room.id,
+        name: this.draftName ?? "",
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
+      });
+    } else if (parsedMessage.type === "undo") {
+      this.draftActor.send({ type: "UNDO" });
       await upsertDraft({
         id: this.room.id,
         name: this.draftName ?? "",
