@@ -53,7 +53,15 @@ export function Draft() {
       return "Draft Complete";
     }
     
-    return "Select Hero";
+    // Check if this selection is a ban or a pick based on the selection number
+    const BAN_SELECTIONS = new Set([
+      "SELECTION_1", "SELECTION_2", "SELECTION_3", "SELECTION_4", 
+      "SELECTION_5", "SELECTION_6", "SELECTION_7", "SELECTION_10", 
+      "SELECTION_11", "SELECTION_12", "SELECTION_19", "SELECTION_20", 
+      "SELECTION_21", "SELECTION_22"
+    ]);
+    
+    return BAN_SELECTIONS.has(machineValue) ? "Ban Hero" : "Pick Hero";
   }
 
   function handleClick() {
