@@ -5,7 +5,7 @@ import { selectedHeroAtom } from "./hero-selection-state";
 import usePartySocket from "partysocket/react";
 import { machineValueToHumanReadable, useLobbyStore } from "./lobby-state";
 import { env } from "@/env/client";
-import type { SelectHeroMessage, UndoMessage } from "party";
+import type { SelectHeroMessage } from "party";
 import { useLoaderData } from "@tanstack/react-router";
 import type { MachineValues } from "@/lib/state-machine";
 
@@ -86,38 +86,20 @@ export function Draft() {
     ws.send(JSON.stringify(message));
   }
 
-  function handleUndo() {
-    const message = {
-      type: "undo",
-    } satisfies UndoMessage;
-    ws.send(JSON.stringify(message));
-  }
+
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-2">
-        <Button
-          onClick={handleClick}
-          disabled={
-            selectedHero === "" ||
-            side !== playerSide ||
-            machineValue === "DRAFT_END"
-          }
-        >
-          {buttonText(machineValue)}
-        </Button>
-        <Button
-          onClick={handleUndo}
-          disabled={
-            side !== playerSide ||
-            machineValue === "SELECTION_1" ||
-            machineValue === "DRAFT_END"
-          }
-          variant="outline"
-        >
-          Undo
-        </Button>
-      </div>
+      <Button
+        onClick={handleClick}
+        disabled={
+          selectedHero === "" ||
+          side !== playerSide ||
+          machineValue === "DRAFT_END"
+        }
+      >
+        {buttonText(machineValue)}
+      </Button>
       <div className="flex flex-row gap-2 ">
         <h1 className="w-full text-center">Team 1</h1>
         <h1 className="w-full text-center">Team 2</h1>

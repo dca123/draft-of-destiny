@@ -7,6 +7,7 @@ import {
   useLobbyStore,
 } from "@/components/lobby-state";
 import { SaveDraft } from "@/components/SaveDraft";
+import { UndoDraft } from "@/components/UndoDraft";
 import { TeamSelect } from "@/components/TeamSelect";
 import { appDb, dotaDb } from "@/db";
 import { heroes } from "@/db/dota-db-schema/heroesItems";
@@ -73,6 +74,7 @@ function RouteComponent() {
           <CurrentSide />
         </div>
         <div className="col-span-2 justify-self-end space-x-2">
+          <UndoDraft />
           <SaveDraft />
           <BranchDraft />
         </div>
