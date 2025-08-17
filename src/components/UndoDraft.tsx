@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 import { RotateCcw } from "lucide-react";
 import usePartySocket from "partysocket/react";
 import { env } from "@/env/client";
-import type { UndoMessage } from "party";
+import type { UndoMessage, Broadcast } from "party";
 import { useLoaderData } from "@tanstack/react-router";
 import { useLobbyStore } from "./lobby-state";
 import { toast } from "sonner";
@@ -12,10 +12,9 @@ export function UndoDraft() {
     from: "/drafts/$draftId",
     select: (data) => data.draft.id,
   });
-  const side = useLobbyStore((state) => state.side);
-  const playerSide = useLobbyStore((state) => state.playerSide);
   const machineValue = useLobbyStore((state) => state.state);
-  
+  const optimisticUndoUpdate = useLobbyStore((state) => state.optimisticUndoUpdate);
+
   const ws = usePartySocket({
     host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
     room: draftId,
@@ -26,7 +25,11 @@ export function UndoDraft() {
       console.log("connected");
     },
     onMessage(e) {
-      console.log("message", e.data);
+      const message = JSON.parse(e.data) as Broadcast;
+      if (message.type === "draft_undo") {
+        // Show toast for other clients when someone else undoes
+        toast("Previous selection was undone");
+      }
     },
     onClose() {
       console.log("closed");
@@ -37,26 +40,29 @@ export function UndoDraft() {
   });
 
   function handleUndo() {
+    // Apply optimistic update locally first
+    optimisticUndoUpdate(machineValue);
+    
+    // Send undo message to server
     const message = {
       type: "undo",
     } satisfies UndoMessage;
     ws.send(JSON.stringify(message));
+    
+    // Show toast for the user who initiated the undo
     toast("Undoing last selection");
   }
 
   return (
-    <Button 
-      variant="secondary" 
-      size="icon" 
+    <Button
+      variant="secondary"
+      size="icon"
       onClick={handleUndo}
-      disabled={
-        side !== playerSide ||
-        machineValue === "SELECTION_1" ||
-        machineValue === "DRAFT_END"
-      }
+      disabled={machineValue === "SELECTION_1" || machineValue === "DRAFT_END"}
       aria-description="Undo Last Selection"
     >
       <RotateCcw />
     </Button>
   );
 }
+

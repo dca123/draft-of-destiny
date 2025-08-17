@@ -1,6 +1,29 @@
-import type { Draft } from "@/lib/state-machine";
+import type { Draft, MachineValues } from "@/lib/state-machine";
 import type { LobbyUpdate } from "party";
 import { create } from "zustand";
+
+// Helper function to get the previous selection state
+function getPreviousSelection(currentSelection: MachineValues): MachineValues {
+  if (currentSelection === "SELECTION_1") {
+    return currentSelection; // No previous state for the first selection
+  }
+  
+  if (currentSelection === "DRAFT_END") {
+    return "SELECTION_24";
+  }
+  
+  // Extract the number from SELECTION_N
+  const parts = currentSelection.split("_");
+  if (parts.length === 2 && parts[1]) {
+    const selectionNumber = parseInt(parts[1], 10);
+    if (!isNaN(selectionNumber) && selectionNumber > 1) {
+      // Return the previous selection
+      return `SELECTION_${selectionNumber - 1}` as MachineValues;
+    }
+  }
+  
+  return currentSelection; // Fallback
+}
 
 type LobbyState = {
   lobbyName: string;
@@ -11,6 +34,7 @@ type DraftState = LobbyUpdate;
 
 type Actions = {
   optimisticDraftUpdate: (selection: DraftState["state"], hero: string) => void;
+  optimisticUndoUpdate: (prevSelection: DraftState["state"]) => void;
   updateDraftState: (state: DraftState) => void;
   setTeam: (team: "team_1" | "team_2") => void;
   resetLobby: (lobbyName: string) => void;
@@ -61,6 +85,19 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
         [selection]: hero,
       },
     })),
+  optimisticUndoUpdate: (prevSelection) => 
+    set((state) => {
+      // Create a new draft object without the previous selection
+      const newDraft = { ...state.draft };
+      // @ts-ignore - we know the key exists
+      delete newDraft[prevSelection];
+      
+      return {
+        draft: newDraft,
+        // If we're at SELECTION_N, optimistically set state back to SELECTION_N-1
+        state: getPreviousSelection(state.state)
+      };
+    }),
   updateDraftState: (draft) => set(draft),
   setTeam: (team) => set({ playerSide: team }),
   resetLobby: (lobbyName) =>

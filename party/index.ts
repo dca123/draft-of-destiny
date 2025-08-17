@@ -45,11 +45,16 @@ type DraftBranchedBroadcast = {
   id: string;
 };
 
+type DraftUndoBroadcast = {
+  type: "draft_undo";
+};
+
 type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage | UndoMessage;
 export type Broadcast =
   | HeroSelelectedBroadcast
   | DraftSavedBroadcast
-  | DraftBranchedBroadcast;
+  | DraftBranchedBroadcast
+  | DraftUndoBroadcast;
 
 export type CreateDraftMessage = {
   type: "create_draft";
@@ -134,6 +139,12 @@ export default class Server implements Party.Server {
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
+      
+      // Broadcast the undo event to all clients
+      const message: DraftUndoBroadcast = {
+        type: "draft_undo",
+      };
+      this.room.broadcast(JSON.stringify(message));
     } else if (parsedMessage.type === "save_message") {
       await upsertDraft({
         id: this.room.id,
