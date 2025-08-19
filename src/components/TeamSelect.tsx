@@ -5,17 +5,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLobbyStore } from "./lobby-state";
+import { getRouteApi } from "@tanstack/react-router";
 
+const route = getRouteApi("/drafts/$draftId");
 export function TeamSelect() {
-  const updateTeamSelect = useLobbyStore((state) => state.setTeam);
+  const navigate = route.useNavigate();
+  const { team } = route.useSearch();
 
   return (
     <div className="flex flex-col space-y-1">
       <label className="text-sm text-muted-foreground">Your Team</label>
       <Select
-        onValueChange={(val: "team_1" | "team_2") => updateTeamSelect(val)}
-        defaultValue="team_1"
+        onValueChange={(val: "team_1" | "team_2") => {
+          navigate({ search: { team: val } });
+        }}
+        value={team}
       >
         <SelectTrigger className="w-[190px]">
           <SelectValue placeholder="Team" />

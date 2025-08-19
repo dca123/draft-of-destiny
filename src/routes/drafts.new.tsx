@@ -61,6 +61,7 @@ function RouteComponent() {
           params: {
             draftId: payload.id,
           },
+          search: { team: "team_1" },
         });
       } else {
         setIsLoading(false);
