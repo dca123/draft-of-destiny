@@ -17,6 +17,8 @@
 - **Formatting**: No explicit formatter configured (follow existing patterns)
 - **Error Handling**: Use TypeScript strict null checks, explicit error types
 
-## Git Commands
-- `git worktree add ../draft-of-destiny-feature feature-branch-name` - Create worktree
-- `git commit --author="Developer Bot <dev-bot@devinda.me>" -m "message"` - Commit with different author
+## Contributing Guidelines
+When making commits as an agent, always use the custom author:
+```bash
+git commit --author="Developer Bot <dev-bot@devinda.me>" -m "your commit message"
+```
