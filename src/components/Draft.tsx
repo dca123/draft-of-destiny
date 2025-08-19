@@ -60,6 +60,7 @@ export function Draft() {
 
   function handleClick() {
     if (selectedHero === "") return;
+    if (machineValue === "DRAFT_END") return;
     optimisticDraftUpdate(machineValue, selectedHero);
     setSelectedHero("");
 

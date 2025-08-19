@@ -12,7 +12,7 @@ export function UndoDraft() {
     from: "/drafts/$draftId",
     select: (data) => data.draft.id,
   });
-  const machineValue = useLobbyStore((state) => state.state);
+  const machineValue = useLobbyStore((state) => state.currentSelection);
   const optimisticUndoUpdate = useLobbyStore(
     (state) => state.optimisticUndoUpdate,
   );
@@ -29,6 +29,7 @@ export function UndoDraft() {
   });
 
   function handleUndo() {
+    if (machineValue === "DRAFT_END") return;
     optimisticUndoUpdate(machineValue);
 
     const message = {

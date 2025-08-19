@@ -1,15 +1,11 @@
-import type { Draft, MachineValues } from "@/lib/state-machine";
+import type { Draft, MachineValues, Selections } from "@/lib/state-machine";
 import type { LobbyUpdateBroadcast as LobbyUpdate } from "party";
 import { create } from "zustand";
 
 type DraftState = Omit<LobbyUpdate, "type">;
-
 type Actions = {
-  optimisticDraftUpdate: (
-    selection: DraftState["currentSelection"],
-    hero: string,
-  ) => void;
-  optimisticUndoUpdate: (prevSelection: DraftState["currentSelection"]) => void;
+  optimisticDraftUpdate: (selection: Selections, hero: string) => void;
+  optimisticUndoUpdate: (prevSelection: Selections) => void;
   updateDraftState: (state: DraftState) => void;
   setTeam: (team: "team_1" | "team_2") => void;
   resetLobby: (lobbyName: string) => void;
@@ -51,6 +47,7 @@ type LobbyState = {
   playerSide: "team_1" | "team_2";
   selectionIdx: number;
 } & DraftState;
+
 const initialState: LobbyState = {
   lobbyName: generatePartyName(),
   playerSide: "team_1",
@@ -70,12 +67,13 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
   optimisticUndoUpdate: (prevSelection) =>
     set((state) => {
       const newDraft = { ...state.draft };
-      // @ts-ignore - we know the key exists
-      delete newDraft[prevSelection];
+      newDraft[prevSelection] = "";
+      const newSelectionIdx = state.selectionIdx - 1;
 
       return {
         draft: newDraft,
-        currentSelection: `SELECTION_${state.selectionIdx--}` as MachineValues,
+        currentSelection: `SELECTION_${newSelectionIdx}` as MachineValues,
+        selectionIdx: newSelectionIdx,
       };
     }),
   updateDraftState: (draft) => set(draft),
