@@ -73,6 +73,7 @@ export function DraftCard(props: {
           <Link
             to="/drafts/$draftId"
             params={{ draftId: props.id }}
+            search={{ team: "team_1" }}
             className="flex flex-row justify-between items-center hover:underline underline-offset-4"
           >
             {props.name}
