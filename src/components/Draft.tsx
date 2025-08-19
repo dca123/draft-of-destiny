@@ -33,7 +33,6 @@ export function Draft() {
   });
   const side = useLobbyStore((state) => state.side);
   const { team } = useSearch({ from: "/drafts/$draftId" });
-  const playerSide = team || "team_1";
   const draft = useLobbyStore((state) => state.draft);
   const updateDraftState = useLobbyStore((state) => state.updateDraftState);
   const optimisticDraftUpdate = useLobbyStore(
@@ -79,9 +78,7 @@ export function Draft() {
       <Button
         onClick={handleClick}
         disabled={
-          selectedHero === "" ||
-          side !== playerSide ||
-          machineValue === "DRAFT_END"
+          selectedHero === "" || side !== team || machineValue === "DRAFT_END"
         }
       >
         {buttonText(machineValue)}
