@@ -6,7 +6,7 @@ import usePartySocket from "partysocket/react";
 import { machineValueToHumanReadable, useLobbyStore } from "./lobby-state";
 import { env } from "@/env/client";
 import type { SelectHeroMessage } from "party";
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, getRouteApi, useSearch } from "@tanstack/react-router";
 import type { MachineValues } from "@/lib/state-machine";
 
 const BAN_SELECTIONS = new Set([
@@ -32,7 +32,8 @@ export function Draft() {
     select: (data) => data.draft.id,
   });
   const side = useLobbyStore((state) => state.side);
-  const playerSide = useLobbyStore((state) => state.playerSide);
+  const { team } = useSearch({ from: "/drafts/$draftId" });
+  const playerSide = team || "team_1";
   const draft = useLobbyStore((state) => state.draft);
   const updateDraftState = useLobbyStore((state) => state.updateDraftState);
   const optimisticDraftUpdate = useLobbyStore(

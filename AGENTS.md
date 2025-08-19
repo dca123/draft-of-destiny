@@ -18,7 +18,7 @@
 - **Error Handling**: Use TypeScript strict null checks, explicit error types
 
 ## Contributing Guidelines
-When making commits as an agent, always use the custom author:
+When making commits, always use the custom author:
 ```bash
 git commit --author="Dev's Developer Bot <dev-bot@devinda.me>" -m "your commit message"
 ```
