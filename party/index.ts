@@ -10,10 +10,6 @@ import { eq } from "drizzle-orm";
 import type * as Party from "partykit/server";
 import { Actor } from "xstate";
 
-export type LobbyUpdate = ExportedMachineState & {
-  state: MachineValues;
-};
-
 export type SaveMessage = {
   type: "save_message";
 };
@@ -32,9 +28,9 @@ export type UndoMessage = {
   type: "undo";
 };
 
-type HeroSelelectedBroadcast = {
-  type: "hero_selected";
-  state: MachineValues;
+export type LobbyUpdateBroadcast = {
+  type: "lobby_update";
+  currentSelection: MachineValues;
 } & ExportedMachineState;
 
 type DraftSavedBroadcast = {
@@ -49,9 +45,13 @@ type DraftUndoBroadcast = {
   type: "draft_undo";
 };
 
-type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage | UndoMessage;
+type Message =
+  | SaveMessage
+  | BranchDraftMessage
+  | SelectHeroMessage
+  | UndoMessage;
 export type Broadcast =
-  | HeroSelelectedBroadcast
+  | LobbyUpdateBroadcast
   | DraftSavedBroadcast
   | DraftBranchedBroadcast
   | DraftUndoBroadcast;
@@ -85,10 +85,10 @@ export default class Server implements Party.Server {
       });
     }
     this.draftActor.subscribe((snapshot) => {
-      const payload: HeroSelelectedBroadcast = {
-        type: "hero_selected",
+      const payload: LobbyUpdateBroadcast = {
+        type: "lobby_update",
         ...snapshot.context,
-        state: snapshot.value,
+        currentSelection: snapshot.value,
       };
       this.room.broadcast(JSON.stringify(payload));
     });
@@ -103,10 +103,10 @@ export default class Server implements Party.Server {
 
     this.draftName = url.searchParams.get("draftName") ?? undefined;
     const snapshot = this.draftActor.getSnapshot();
-    const payload: HeroSelelectedBroadcast = {
-      type: "hero_selected",
+    const payload: LobbyUpdateBroadcast = {
+      type: "lobby_update",
       ...snapshot.context,
-      state: snapshot.value,
+      currentSelection: snapshot.value,
     };
     conn.send(JSON.stringify(payload));
 
@@ -139,7 +139,7 @@ export default class Server implements Party.Server {
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
-      
+
       // Broadcast the undo event to all clients
       const message: DraftUndoBroadcast = {
         type: "draft_undo",

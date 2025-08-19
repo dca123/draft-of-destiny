@@ -60,9 +60,7 @@ export const machine = setup({
     context: {} as ExportedMachineState & {
       selectionIdx: number;
     },
-    events: {} as 
-      | { type: "NEXT"; hero: string; }
-      | { type: "UNDO"; },
+    events: {} as { type: "NEXT"; hero: string } | { type: "UNDO" },
   },
   actions: {
     setSideTeam1: assign({
@@ -103,7 +101,7 @@ export const machine = setup({
         // Remove the last selection from the draft
         delete newDraft[`SELECTION_${context.selectionIdx - 1}` as Selections];
         return newDraft;
-      }
+      },
     }),
   },
 }).createMachine({
@@ -422,14 +420,8 @@ export const machine = setup({
         },
       },
     },
-    DRAFT_END: { 
+    DRAFT_END: {
       type: "final",
-      on: {
-        UNDO: {
-          target: "SELECTION_24",
-          actions: "undoLastSelection",
-        },
-      } 
     },
   },
 });

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "server:dev": "partykit dev",
+    "dev:server": "partykit dev",
     "build": "tsc --noEmit && vite build ",
     "start": "node .output/server/index.mjs"
   },

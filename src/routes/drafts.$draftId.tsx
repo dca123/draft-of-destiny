@@ -106,7 +106,8 @@ function RouteComponent() {
 }
 
 function CurrentSelection() {
-  const state = useLobbyStore((s) => s.state);
+  const state = useLobbyStore((s) => s.currentSelection);
+  console.log(state);
   return (
     <h1 className="text-xl font-semibold">
       {machineValueToHumanReadable[state]}
