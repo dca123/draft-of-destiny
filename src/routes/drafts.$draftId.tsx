@@ -15,9 +15,15 @@ import { drafts } from "@/db/schema/drafts";
 import { Separator } from "@/components/ui/separator";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { asc, eq } from "drizzle-orm";
 import { Input } from "@/components/ui/input";
 import { atom, useAtom, useSetAtom } from "jotai";
+import z from "zod";
+
+const draftSearchSchema = z.object({
+  team: z.enum(["team_1", "team_2"]).catch("team_1"),
+});
 
 type Heroes = typeof heroes.$inferSelect;
 const getHeroes = createServerFn().handler(async () => {
@@ -43,6 +49,7 @@ const getDraft = createServerFn()
 
 export const Route = createFileRoute("/drafts/$draftId")({
   component: RouteComponent,
+  validateSearch: zodValidator(draftSearchSchema),
   loader: async ({ params }) => {
     const [draft, heroes] = await Promise.all([
       getDraft({ data: params.draftId }),
@@ -107,7 +114,6 @@ function RouteComponent() {
 
 function CurrentSelection() {
   const state = useLobbyStore((s) => s.currentSelection);
-  console.log(state);
   return (
     <h1 className="text-xl font-semibold">
       {machineValueToHumanReadable[state]}
@@ -116,7 +122,7 @@ function CurrentSelection() {
 }
 
 function CurrentSide() {
-  const side = useLobbyStore((s) => s.side);
-  const displayText = side === "team_1" ? "Team 1" : "Team 2";
+  const { team } = Route.useSearch();
+  const displayText = (team || "team_1") === "team_1" ? "Team 1" : "Team 2";
   return <h1 className="text-xl font-semibold">{displayText}</h1>;
 }

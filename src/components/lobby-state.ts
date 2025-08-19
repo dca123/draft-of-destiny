@@ -7,7 +7,6 @@ type Actions = {
   optimisticDraftUpdate: (selection: Selections, hero: string) => void;
   optimisticUndoUpdate: (prevSelection: Selections) => void;
   updateDraftState: (state: DraftState) => void;
-  setTeam: (team: "team_1" | "team_2") => void;
   resetLobby: (lobbyName: string) => void;
 };
 
@@ -44,13 +43,11 @@ const initialDraft: DraftState = {
 
 type LobbyState = {
   lobbyName: string;
-  playerSide: "team_1" | "team_2";
   selectionIdx: number;
 } & DraftState;
 
 const initialState: LobbyState = {
   lobbyName: generatePartyName(),
-  playerSide: "team_1",
   selectionIdx: 1,
   ...initialDraft,
 };
@@ -77,7 +74,7 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
       };
     }),
   updateDraftState: (draft) => set(draft),
-  setTeam: (team) => set({ playerSide: team }),
+
   resetLobby: (lobbyName) =>
     set({
       ...initialDraft,
