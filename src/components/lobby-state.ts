@@ -1,16 +1,11 @@
-import type { Draft } from "@/lib/state-machine";
-import type { LobbyUpdate } from "party";
+import type { Draft, MachineValues, Selections } from "@/lib/state-machine";
+import type { LobbyUpdateBroadcast as LobbyUpdate } from "party";
 import { create } from "zustand";
 
-type LobbyState = {
-  lobbyName: string;
-  playerSide: "team_1" | "team_2";
-} & DraftState;
-
-type DraftState = LobbyUpdate;
-
+type DraftState = Omit<LobbyUpdate, "type">;
 type Actions = {
-  optimisticDraftUpdate: (selection: DraftState["state"], hero: string) => void;
+  optimisticDraftUpdate: (selection: Selections, hero: string) => void;
+  optimisticUndoUpdate: (prevSelection: Selections) => void;
   updateDraftState: (state: DraftState) => void;
   setTeam: (team: "team_1" | "team_2") => void;
   resetLobby: (lobbyName: string) => void;
@@ -18,7 +13,7 @@ type Actions = {
 
 const initialDraft: DraftState = {
   side: "team_1",
-  state: "SELECTION_1",
+  currentSelection: "SELECTION_1",
   draft: {
     SELECTION_1: "",
     SELECTION_2: "",
@@ -46,9 +41,17 @@ const initialDraft: DraftState = {
     SELECTION_24: "",
   } satisfies Draft,
 };
+
+type LobbyState = {
+  lobbyName: string;
+  playerSide: "team_1" | "team_2";
+  selectionIdx: number;
+} & DraftState;
+
 const initialState: LobbyState = {
   lobbyName: generatePartyName(),
   playerSide: "team_1",
+  selectionIdx: 1,
   ...initialDraft,
 };
 
@@ -61,6 +64,18 @@ export const useLobbyStore = create<LobbyState & Actions>((set) => ({
         [selection]: hero,
       },
     })),
+  optimisticUndoUpdate: (prevSelection) =>
+    set((state) => {
+      const newDraft = { ...state.draft };
+      newDraft[prevSelection] = "";
+      const newSelectionIdx = state.selectionIdx - 1;
+
+      return {
+        draft: newDraft,
+        currentSelection: `SELECTION_${newSelectionIdx}` as MachineValues,
+        selectionIdx: newSelectionIdx,
+      };
+    }),
   updateDraftState: (draft) => set(draft),
   setTeam: (team) => set({ playerSide: team }),
   resetLobby: (lobbyName) =>

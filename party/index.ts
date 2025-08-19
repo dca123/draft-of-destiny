@@ -6,13 +6,9 @@ import {
   type ExportedMachineState,
   type MachineValues,
 } from "@/lib/state-machine";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type * as Party from "partykit/server";
-import { Actor, type Snapshot } from "xstate";
-
-export type LobbyUpdate = ExportedMachineState & {
-  state: MachineValues;
-};
+import { Actor } from "xstate";
 
 export type SaveMessage = {
   type: "save_message";
@@ -28,9 +24,13 @@ export type BranchDraftMessage = {
   type: "branch_draft";
 };
 
-type HeroSelelectedBroadcast = {
-  type: "hero_selected";
-  state: MachineValues;
+export type UndoMessage = {
+  type: "undo";
+};
+
+export type LobbyUpdateBroadcast = {
+  type: "lobby_update";
+  currentSelection: MachineValues;
 } & ExportedMachineState;
 
 type DraftSavedBroadcast = {
@@ -41,11 +41,20 @@ type DraftBranchedBroadcast = {
   id: string;
 };
 
-type Message = SaveMessage | BranchDraftMessage | SelectHeroMessage;
+type DraftUndoBroadcast = {
+  type: "draft_undo";
+};
+
+type Message =
+  | SaveMessage
+  | BranchDraftMessage
+  | SelectHeroMessage
+  | UndoMessage;
 export type Broadcast =
-  | HeroSelelectedBroadcast
+  | LobbyUpdateBroadcast
   | DraftSavedBroadcast
-  | DraftBranchedBroadcast;
+  | DraftBranchedBroadcast
+  | DraftUndoBroadcast;
 
 export type CreateDraftMessage = {
   type: "create_draft";
@@ -76,10 +85,10 @@ export default class Server implements Party.Server {
       });
     }
     this.draftActor.subscribe((snapshot) => {
-      const payload: HeroSelelectedBroadcast = {
-        type: "hero_selected",
+      const payload: LobbyUpdateBroadcast = {
+        type: "lobby_update",
         ...snapshot.context,
-        state: snapshot.value,
+        currentSelection: snapshot.value,
       };
       this.room.broadcast(JSON.stringify(payload));
     });
@@ -94,10 +103,10 @@ export default class Server implements Party.Server {
 
     this.draftName = url.searchParams.get("draftName") ?? undefined;
     const snapshot = this.draftActor.getSnapshot();
-    const payload: HeroSelelectedBroadcast = {
-      type: "hero_selected",
+    const payload: LobbyUpdateBroadcast = {
+      type: "lobby_update",
       ...snapshot.context,
-      state: snapshot.value,
+      currentSelection: snapshot.value,
     };
     conn.send(JSON.stringify(payload));
 
@@ -122,6 +131,20 @@ export default class Server implements Party.Server {
         persistedMachineSnapshot:
           this.draftActor.getPersistedSnapshot() as CustomSnapshot,
       });
+    } else if (parsedMessage.type === "undo") {
+      this.draftActor.send({ type: "UNDO" });
+      await upsertDraft({
+        id: this.room.id,
+        name: this.draftName ?? "",
+        persistedMachineSnapshot:
+          this.draftActor.getPersistedSnapshot() as CustomSnapshot,
+      });
+
+      // Broadcast the undo event to all clients
+      const message: DraftUndoBroadcast = {
+        type: "draft_undo",
+      };
+      this.room.broadcast(JSON.stringify(message));
     } else if (parsedMessage.type === "save_message") {
       await upsertDraft({
         id: this.room.id,

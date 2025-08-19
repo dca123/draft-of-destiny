@@ -38,29 +38,15 @@ export function Draft() {
   const optimisticDraftUpdate = useLobbyStore(
     (state) => state.optimisticDraftUpdate,
   );
-  const machineValue = useLobbyStore((state) => state.state); // renamed to avoid shadowing 'state'
+  const machineValue = useLobbyStore((state) => state.currentSelection); // renamed to avoid shadowing 'state'
 
   const ws = usePartySocket({
     host: import.meta.env.DEV ? "localhost:1999" : env.VITE_PARTYKIT_URL,
     room: draftId,
-    // startClosed: true,
-    query: () => ({
-      draftName: "hellowWorld",
-    }),
-
-    onOpen() {
-      console.log("connected");
-    },
     onMessage(e) {
       console.log("message", e.data);
       const s = JSON.parse(e.data);
       updateDraftState(s);
-    },
-    onClose() {
-      console.log("closed");
-    },
-    onError(e) {
-      console.log("error", e);
     },
   });
 
@@ -74,6 +60,7 @@ export function Draft() {
 
   function handleClick() {
     if (selectedHero === "") return;
+    if (machineValue === "DRAFT_END") return;
     optimisticDraftUpdate(machineValue, selectedHero);
     setSelectedHero("");
 
@@ -85,6 +72,7 @@ export function Draft() {
     } satisfies SelectHeroMessage;
     ws.send(JSON.stringify(message));
   }
+
   return (
     <div className="flex flex-col gap-2">
       <Button
@@ -241,7 +229,7 @@ function HeroSlot(props: {
   isPick: boolean;
   className?: string;
 }) {
-  const currentSelection = useLobbyStore((state) => state.state);
+  const currentSelection = useLobbyStore((state) => state.currentSelection);
   return (
     <div
       className={cn(

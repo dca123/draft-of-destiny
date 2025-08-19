@@ -7,6 +7,7 @@ import {
   useLobbyStore,
 } from "@/components/lobby-state";
 import { SaveDraft } from "@/components/SaveDraft";
+import { UndoDraft } from "@/components/UndoDraft";
 import { TeamSelect } from "@/components/TeamSelect";
 import { appDb, dotaDb } from "@/db";
 import { heroes } from "@/db/dota-db-schema/heroesItems";
@@ -73,6 +74,7 @@ function RouteComponent() {
           <CurrentSide />
         </div>
         <div className="col-span-2 justify-self-end space-x-2">
+          <UndoDraft />
           <SaveDraft />
           <BranchDraft />
         </div>
@@ -104,7 +106,8 @@ function RouteComponent() {
 }
 
 function CurrentSelection() {
-  const state = useLobbyStore((s) => s.state);
+  const state = useLobbyStore((s) => s.currentSelection);
+  console.log(state);
   return (
     <h1 className="text-xl font-semibold">
       {machineValueToHumanReadable[state]}
