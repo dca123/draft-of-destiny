@@ -20,5 +20,5 @@
 ## Contributing Guidelines
 When making commits as an agent, always use the custom author:
 ```bash
-git commit --author="Developer Bot <dev-bot@devinda.me>" -m "your commit message"
+git commit --author="Dev's Developer Bot <dev-bot@devinda.me>" -m "your commit message"
 ```
