@@ -43,7 +43,7 @@ importers:
         version: 1.128.0(@tanstack/react-query@5.83.0(react@19.1.0))(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@tanstack/router-core@1.128.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-start':
         specifier: ^1.128.0
-        version: 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
+        version: 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -60,8 +60,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       drizzle-orm:
-        specifier: ^0.44.3
-        version: 0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)
+        specifier: ^0.45.2
+        version: 0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)
       jotai:
         specifier: ^2.12.5
         version: 2.12.5(@types/react@19.1.8)(react@19.1.0)
@@ -195,6 +195,10 @@ packages:
 
   '@babel/helper-plugin-utils@7.27.1':
     resolution: {integrity: sha512-1gn1Up5YXka3YYAHGKpbideQ5Yjf1tDa9qYcgysz+cNCXukyLl6DjPXhD3VRwSb8c0J9tA4b2+rHEZtc6R0tlw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-plugin-utils@7.28.6':
+    resolution: {integrity: sha512-S9gzZ/bz83GRysI7gAD4wPT/AI3uCnY+9xn+Mx/KPs2JwHJIz1W8PZkg2cqyt3RNOBM8ejcXhV6y8Og7ly/Dug==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-replace-supers@7.27.1':
@@ -2571,8 +2575,8 @@ packages:
     resolution: {integrity: sha512-tCPWVZWZqWVx2XUsVpJRnH9Mx0ClVOf5YUHerZ5so1OKSlqww4zy1R5ksEdGRcO3tM3zj0PYN6V48TbQCL1RfA==}
     hasBin: true
 
-  drizzle-orm@0.44.3:
-    resolution: {integrity: sha512-8nIiYQxOpgUicEL04YFojJmvC4DNO4KoyXsEIqN44+g6gNBr6hmVpWk3uyAt4CaTiRGDwoU+alfqNNeonLAFOQ==}
+  drizzle-orm@0.45.2:
+    resolution: {integrity: sha512-kY0BSaTNYWnoDMVoyY8uxmyHjpJW1geOmBMdSSicKo9CIIWkSxMIj2rkeSR51b8KAPB7m+qysjuHme5nKP+E5Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -2951,6 +2955,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globby@14.1.0:
@@ -3224,6 +3229,7 @@ packages:
 
   libsql@0.5.15:
     resolution: {integrity: sha512-N1ZhjpTadoxDW8UNssgJyZz+cAX/gi9OxOFHapH8AY6p7Qk/6umTC5UwQ+6bPnACDcxqbzhRlbLO+Mk60owFRA==}
+    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   lightningcss-darwin-arm64@1.30.1:
@@ -4079,6 +4085,7 @@ packages:
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   terser@5.43.1:
     resolution: {integrity: sha512-+6erLbBm0+LROX2sPXlUYx/ux5PyE9K/a92Wrt6oA+WDAoFTdpHE5tCYCI5PNzq2y8df4rA+QgHLJuR4jNymsg==}
@@ -4419,6 +4426,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -4653,6 +4661,8 @@ snapshots:
 
   '@babel/helper-plugin-utils@7.27.1': {}
 
+  '@babel/helper-plugin-utils@7.28.6': {}
+
   '@babel/helper-replace-supers@7.27.1(@babel/core@7.28.0)':
     dependencies:
       '@babel/core': 7.28.0
@@ -4705,12 +4715,12 @@ snapshots:
   '@babel/plugin-transform-react-jsx-self@7.27.1(@babel/core@7.28.0)':
     dependencies:
       '@babel/core': 7.28.0
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.28.6
 
   '@babel/plugin-transform-react-jsx-source@7.27.1(@babel/core@7.28.0)':
     dependencies:
       '@babel/core': 7.28.0
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.28.6
 
   '@babel/plugin-transform-typescript@7.28.0(@babel/core@7.28.0)':
     dependencies:
@@ -5973,9 +5983,9 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  '@tanstack/react-start-plugin@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
+  '@tanstack/react-start-plugin@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
     dependencies:
-      '@tanstack/start-plugin-core': 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
+      '@tanstack/start-plugin-core': 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
       '@vitejs/plugin-react': 4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
       vite: 7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)
       zod: 3.25.76
@@ -6023,10 +6033,10 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@tanstack/react-start@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
+  '@tanstack/react-start@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
     dependencies:
       '@tanstack/react-start-client': 1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@tanstack/react-start-plugin': 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
+      '@tanstack/react-start-plugin': 1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
       '@tanstack/react-start-server': 1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/start-server-functions-client': 1.128.0(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
       '@tanstack/start-server-functions-server': 1.127.4(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
@@ -6158,7 +6168,7 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  '@tanstack/start-plugin-core@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
+  '@tanstack/start-plugin-core@1.128.0(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(@tanstack/react-router@1.128.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))(vite@7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))':
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/core': 7.28.0
@@ -6174,7 +6184,7 @@ snapshots:
       babel-dead-code-elimination: 1.0.10
       cheerio: 1.1.0
       h3: 1.13.0
-      nitropack: 2.12.2(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
+      nitropack: 2.12.2(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
       pathe: 2.0.3
       ufo: 1.6.1
       vite: 7.0.5(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)
@@ -6787,10 +6797,10 @@ snapshots:
 
   data-uri-to-buffer@4.0.1: {}
 
-  db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)):
+  db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)):
     optionalDependencies:
       '@libsql/client': 0.15.10
-      drizzle-orm: 0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)
+      drizzle-orm: 0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)
 
   debug@4.4.1:
     dependencies:
@@ -6911,7 +6921,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10):
+  drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20240718.0
       '@libsql/client': 0.15.10
@@ -7748,7 +7758,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  nitropack@2.12.2(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)):
+  nitropack@2.12.2(@libsql/client@0.15.10)(@netlify/blobs@9.1.2)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@netlify/functions': 3.1.10(rollup@4.45.1)
@@ -7770,7 +7780,7 @@ snapshots:
       cookie-es: 2.0.0
       croner: 9.1.0
       crossws: 0.3.5
-      db0: 0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
+      db0: 0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
       defu: 6.1.4
       destr: 2.0.5
       dot-prop: 9.0.0
@@ -7816,7 +7826,7 @@ snapshots:
       unenv: 2.0.0-rc.18
       unimport: 5.1.0
       unplugin-utils: 0.2.4
-      unstorage: 1.16.1(@netlify/blobs@9.1.2)(db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)))(ioredis@5.6.1)
+      unstorage: 1.16.1(@netlify/blobs@9.1.2)(db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)))(ioredis@5.6.1)
       untyped: 2.0.0
       unwasm: 0.3.9
       youch: 4.1.0-beta.8
@@ -8653,7 +8663,7 @@ snapshots:
       picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.16.1(@netlify/blobs@9.1.2)(db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)))(ioredis@5.6.1):
+  unstorage@1.16.1(@netlify/blobs@9.1.2)(db0@0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10)))(ioredis@5.6.1):
     dependencies:
       anymatch: 3.1.3
       chokidar: 4.0.3
@@ -8665,7 +8675,7 @@ snapshots:
       ufo: 1.6.1
     optionalDependencies:
       '@netlify/blobs': 9.1.2
-      db0: 0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.44.3(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
+      db0: 0.3.2(@libsql/client@0.15.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20240718.0)(@libsql/client@0.15.10))
       ioredis: 5.6.1
 
   untun@0.1.3:
